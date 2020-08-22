@@ -1,0 +1,19 @@
+{
+  "name": "@v4fire/cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "v4fire": "bin/cli.js"
+  },
+  "scripts": {},
+  "devDependencies": {},
+  "keywords": [],
+  "author": "Chupurnov Valeriy",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "fs-extra": "^9.0.1",
+    "yargs": "^15.4.1"
+  }
+}
