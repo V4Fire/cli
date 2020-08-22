@@ -25,9 +25,13 @@ class Application {
 				this.config.path = path.resolve(this.config.path);
 			}
 
-			const Controller = controllers[`${ucfirst(command)}Controller`];
+			const ControllerName = `${ucfirst(command)}Controller`;
 
-			assert.equal(typeof Controller, 'function');
+			const Controller = controllers[ControllerName];
+
+			if (typeof Controller !== 'function') {
+				throw new Error('Unknown controller: ' + ControllerName);
+			}
 
 			const controller = new Controller(this.config);
 

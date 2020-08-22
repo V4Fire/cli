@@ -38,4 +38,4 @@ class Logger {
 	}
 }
 
-expors.log = new Logger();
+module.exports.log = new Logger();

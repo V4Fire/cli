@@ -12,6 +12,10 @@ function json(data) {
 	if (data instanceof Error) {
 		result.data.message = data.message;
 		result.data.code = data.code;
+
+		if (this.config.debug) {
+			result.data.stack = data.stack;
+		}
 	} else {
 		result.status = true;
 		result.data = data;
@@ -21,7 +25,7 @@ function json(data) {
 		console.clear();
 		console.log(JSON.stringify(result));
 	} else {
-		console.log(JSON.stringify(result), null, 2);
+		console.log(JSON.stringify(result, null, ' '));
 	}
 
 	process.exit();
