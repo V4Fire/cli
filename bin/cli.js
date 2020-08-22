@@ -33,6 +33,12 @@ const options = yargs
 				type: 'string'
 			})
 	})
+	.option('debug', {
+		alias: 'd',
+		describe: 'Debug mode',
+		default: false,
+		type: 'boolean'
+	})
 	.option('reporter', {
 		alias: 'r',
 		default: 'json',

@@ -1,3 +1,8 @@
+/**
+ * JSON reporter
+ * @param {object} data
+ * @this ../Application
+ */
 function json(data) {
 	let result = {
 		status: false,
@@ -12,7 +17,13 @@ function json(data) {
 		result.data = data;
 	}
 
-	console.log(JSON.stringify(result));
+	if (!this.config.debug) {
+		console.clear();
+		console.log(JSON.stringify(result));
+	} else {
+		console.log(JSON.stringify(result), null, 2);
+	}
+
 	process.exit();
 }
 

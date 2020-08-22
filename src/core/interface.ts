@@ -1,4 +1,5 @@
 interface Config {
+	debug?: boolean;
 	override?: boolean;
 	path: string;
 	name: string;

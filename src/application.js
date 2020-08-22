@@ -1,5 +1,8 @@
 const assert = require('assert').strict;
 const path = require('path');
+const reporters = require('./core/reporters/index');
+const controllers = require('./controllers/index');
+const { ucfirst } = require("./core/helpers");
 
 class Application {
 	/**
@@ -22,9 +25,7 @@ class Application {
 				this.config.path = path.resolve(this.config.path);
 			}
 
-			assert(/make|rename/.test(command));
-
-			const Controller = require(`./controllers/${command}/${command}`);
+			const Controller = controllers[`${ucfirst(command)}Controller`];
 
 			assert.equal(typeof Controller, 'function');
 
@@ -40,9 +41,9 @@ class Application {
 	}
 
 	sendToReporter(e) {
-		const reporter = require('./core/reporters/' + this.config.reporter + '.js')[this.config.reporter];
+		const reporter = reporters[this.config.reporter];
 		assert.equal(typeof reporter, 'function');
-		reporter(e);
+		reporter.call(this, e);
 	}
 }
 
