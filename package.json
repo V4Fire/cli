@@ -1,7 +1,7 @@
 {
   "name": "@v4fire/cli",
-  "version": "1.0.1",
-  "description": "",
+  "version": "1.0.2",
+  "description": "Tools for creating V4Fire blocks and pages from CLI",
   "main": "index.js",
   "bin": {
     "v4fire": "bin/cli.js"
@@ -15,9 +15,15 @@
     "cli",
     "v4fire"
   ],
-  "author": "Chupurnov Valeriy",
+  "author": "Chupurnov Valeriy<chupurnov@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/V4Fire/cli.git"
+  },
   "license": "MIT",
   "dependencies": {
+    "@v4fire/client": "^3.0.0-rc.59",
+    "@v4fire/core": "^3.24.0",
     "chalk": "^4.1.0",
     "fs-extra": "^9.0.1",
     "yargs": "^15.4.1"
