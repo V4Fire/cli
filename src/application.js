@@ -1,6 +1,7 @@
 const assert = require('assert').strict;
+const path = require('path');
 
-exports.Application = class Application {
+class Application {
 	/**
 	 * @param {Config} config
 	 */
@@ -12,6 +13,14 @@ exports.Application = class Application {
 		try {
 			const
 				[command] = this.config._;
+
+			if (!this.config.path) {
+				this.config.path =
+					path.join(process.cwd(), this.config.subject === 'page' ? './src/pages' : './src/base')
+
+			} else {
+				this.config.path = path.resolve(this.config.path);
+			}
 
 			assert(/make|rename/.test(command));
 
@@ -36,3 +45,5 @@ exports.Application = class Application {
 		reporter(e);
 	}
 }
+
+exports.Application = Application;

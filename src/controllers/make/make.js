@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const { camelize } = require("../../core/helpers");
 
-module.exports = class MakeController extends Controller {
+class MakeController extends Controller {
 	async run() {
 		const
 			prefix = this.config.subject === 'block' ? 'b' : 'p',
@@ -11,7 +11,8 @@ module.exports = class MakeController extends Controller {
 
 		const
 			source = path.resolve(__dirname, 'template', this.config.subject),
-			destination = path.resolve(this.config.path, name);
+			destination = path.resolve(this.config.path, name),
+			defName = prefix + '-name';
 
 		await fs.ensureDir(destination);
 
@@ -20,16 +21,18 @@ module.exports = class MakeController extends Controller {
 		for (const file of files) {
 			const
 				data = fs.readFileSync(path.resolve(source, file), 'utf8'),
-				newFile = path.resolve(destination, file.replace('b-name', name));
+				newFile = path.resolve(destination, file.replace(defName, name));
 
 			if (!fs.existsSync(newFile) || this.config.override) {
 				fs.writeFileSync(
 					newFile,
 					data
-						.replace('b-name', name)
-						.replace('BName', camelize(name))
+						.replace(defName, name)
+						.replace(RegExp(camelize(defName), 'i'), camelize(name))
 				);
 			}
 		}
 	}
 }
+
+module.exports = MakeController;

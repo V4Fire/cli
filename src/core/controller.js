@@ -1,7 +1,7 @@
 /**
  * @typedef { import("./interface").Config } Config
  */
-exports.Controller = class Controller {
+class Controller {
 	/**
 	 * @type {Config}
 	 */
@@ -23,3 +23,5 @@ exports.Controller = class Controller {
 		return /^[bp]-/.test(name) ? name : prefix + '-' + name;
 	}
 }
+
+exports.Controller = Controller;

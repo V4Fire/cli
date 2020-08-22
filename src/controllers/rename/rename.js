@@ -1,10 +1,10 @@
 const { Controller } = require("../../core/controller");
+const { camelize } = require("../../core/helpers");
 const fs = require('fs-extra');
 const path = require('path');
 const assert = require("assert");
-const {camelize} = require("../../core/helpers");
 
-module.exports = class RenameController extends Controller {
+class RenameController extends Controller {
 	async run() {
 		const source = this.findSource();
 
@@ -38,7 +38,7 @@ module.exports = class RenameController extends Controller {
 					newFile,
 					data
 						.replace(baseName, newName)
-						.replace(camelize(baseName), camelize(newName))
+						.replace(RegExp(camelize(baseName), 'i'), camelize(newName))
 				);
 			}
 
@@ -62,3 +62,5 @@ module.exports = class RenameController extends Controller {
 		return false;
 	}
 }
+
+module.exports = RenameController;

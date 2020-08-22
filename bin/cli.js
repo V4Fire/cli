@@ -4,7 +4,6 @@
 
 const yargs = require('yargs');
 const { Application } = require("../src/application");
-const path = require('path');
 
 const options = yargs
 	.command('make <subject> <name> [path]', 'Make block or page', (yargs) => {
@@ -19,7 +18,6 @@ const options = yargs
 				type: 'string'
 			})
 			.positional('path', {
-				default: path.join(process.cwd(), './src/base'),
 				type: 'string'
 			})
 	})
@@ -32,7 +30,6 @@ const options = yargs
 				type: 'string'
 			})
 			.positional('path', {
-				default: path.join(process.cwd(), './src/base'),
 				type: 'string'
 			})
 	})
@@ -47,10 +44,10 @@ const options = yargs
 	.help('help')
 	.alias('help', 'h')
 	.alias('help', '?')
-	.example('rename b-loader b-loader-mini', 'Rename b-loader to b-loader-mini')
-	.example('make block b-point', 'Make i-block b-point')
-	.example('make block point', 'Make i-block b-point')
-	.example('make page card', 'Make i-dynamic-page p-card')
+	.example('v4fire rename b-loader b-loader-mini', 'Rename b-loader to b-loader-mini')
+	.example('v4fire make block b-point', 'Make i-block b-point')
+	.example('v4fire make block point', 'Make i-block b-point')
+	.example('v4fire make page card', 'Make i-dynamic-page p-card')
 	.epilogue('MIT')
 	.argv;
 

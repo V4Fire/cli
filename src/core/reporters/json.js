@@ -1,4 +1,4 @@
-exports.json = function (data) {
+function json(data) {
 	let result = {
 		status: false,
 		data: {}
@@ -14,4 +14,6 @@ exports.json = function (data) {
 
 	console.log(JSON.stringify(result));
 	process.exit();
-};
+}
+
+module.exports.json = json;
