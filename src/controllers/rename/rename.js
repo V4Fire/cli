@@ -24,7 +24,12 @@ class RenameController extends Controller {
 			const
 				sourceFile = path.resolve(source, file),
 				ext = path.extname(sourceFile),
+				stat = fs.statSync(sourceFile),
 				fileName = path.basename(sourceFile, ext);
+
+			if (stat.isDirectory()) {
+				continue;
+			}
 
 			const data = fs.readFileSync(sourceFile, 'utf8');
 
