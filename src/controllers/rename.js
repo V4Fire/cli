@@ -36,20 +36,12 @@ class RenameController extends Controller {
 					? this.vfs.resolve(source, newName + ext.toLowerCase())
 					: sourceFile;
 
-			if (
-				!this.vfs.exists(newFile) ||
-				this.config.override ||
-				fileName === 'index'
-			) {
-				this.vfs.writeFile(
-					newFile,
-					data
-						.replace(baseName, newName)
-						.replace(RegExp(camelize(baseName), 'i'), camelize(newName))
-				);
-			}
+			this.vfs.writeFile(
+				newFile,
+				this.replaceNames(data, newName, baseName, false)
+			);
 
-			if (fileName !== 'index') {
+			if (/^[bp]-[a-z0-9-]+/.test(fileName)) {
 				this.vfs.unlink(sourceFile);
 			}
 		}

@@ -42,31 +42,6 @@ class MakeController extends Controller {
 			}
 		}
 	}
-
-	/**
-	 * Rename all names to target name
-	 *
-	 * @param {string} content
-	 * @param {string} newName
-	 * @returns {string}
-	 * @private
-	 */
-	replaceNames(content, newName) {
-		const defName = 'b-name';
-		const defExtend = 'i-block';
-
-		return content
-			.replace(/base\//g, this.vfs.pathByRoot(this.config.path))
-			.replace(/{Date}/g, new Date().toISOString().substr(0, 10))
-			.replace(RegExp(defName, 'g'), newName)
-			.replace(RegExp(defExtend, 'g'), this.config.extend)
-			.replace(RegExp(camelize(defName), 'g'), camelize(newName))
-			.replace(
-				RegExp(ucfirst(camelize(defName)), 'g'),
-				ucfirst(camelize(newName))
-			)
-			.replace(RegExp(camelize(defExtend), 'g'), camelize(this.config.extend));
-	}
 }
 
 module.exports = MakeController;
