@@ -1,17 +1,24 @@
 /**
- * @typedef { import("./interface").Config } Config
+ * @typedef { import("./interface").Config }
  */
 class Controller {
 	/**
-	 * @type {Config}
+	 * @type {IConfig}
 	 */
 	config;
 
 	/**
-	 * @param {Config} config
+	 * @type {VirtualFileSystem}
 	 */
-	constructor(config) {
+	vfs;
+
+	/**
+	 * @param {IConfig} config
+	 * @param {VirtualFileSystem} vfs
+	 */
+	constructor(config, vfs) {
 		this.config = config;
+		this.vfs = vfs;
 	}
 
 	/**
@@ -19,8 +26,8 @@ class Controller {
 	 * @param {string} [prefix]
 	 * @returns {string}
 	 */
-	resolveName(name, prefix = 'b'){
-		return /^[bp]-/.test(name) ? name : prefix + '-' + name;
+	resolveName(name, prefix = 'b') {
+		return /^[bp]-/.test(name) ? name : `${prefix}-${name}`;
 	}
 }
 

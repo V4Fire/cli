@@ -1,44 +1,42 @@
 const assert = require('assert').strict;
-const path = require('path');
 const reporters = require('./core/reporters/index');
 const controllers = require('./controllers/index');
-const { ucfirst } = require("./core/helpers");
+const {Config} = require('./core/config');
+const {VirtualFileSystem} = require('./core/vfs');
+const {ucfirst} = require('./core/helpers');
 
 class Application {
 	/**
-	 * @param {Config} config
+	 * @type {VirtualFileSystem}
 	 */
-	constructor(config) {
-		this.config = config;
+	vfs;
+
+	/**
+	 * @param {IConfig} config
+	 * @param {VirtualFileSystem} vfs
+	 */
+	constructor(config, vfs = new VirtualFileSystem()) {
+		this.config = new Config(config, vfs);
+		this.vfs = vfs;
 	}
 
 	async run() {
 		try {
-			const
-				[command] = this.config._;
-
-			if (!this.config.path) {
-				this.config.path =
-					path.join(process.cwd(), this.config.subject === 'page' ? './src/pages' : './src/base')
-
-			} else {
-				this.config.path = path.resolve(this.config.path);
-			}
+			const {command} = this.config;
 
 			const ControllerName = `${ucfirst(command)}Controller`;
 
 			const Controller = controllers[ControllerName];
 
 			if (typeof Controller !== 'function') {
-				throw new Error('Unknown controller: ' + ControllerName);
+				throw new Error(`Unknown controller: ${ControllerName}`);
 			}
 
-			const controller = new Controller(this.config);
+			const controller = new Controller(this.config, this.vfs);
 
 			await controller.run();
 
 			this.sendToReporter({});
-
 		} catch (e) {
 			this.sendToReporter(e);
 		}

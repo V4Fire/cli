@@ -4,7 +4,7 @@
  * @this ../Application
  */
 function json(data) {
-	let result = {
+	const result = {
 		status: false,
 		data: {}
 	};
@@ -24,11 +24,10 @@ function json(data) {
 	if (!this.config.debug) {
 		console.clear();
 		console.log(JSON.stringify(result));
+		process.exit();
 	} else {
 		console.log(JSON.stringify(result, null, ' '));
 	}
-
-	process.exit();
 }
 
 module.exports.json = json;

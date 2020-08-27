@@ -1,16 +1,16 @@
 {
   "name": "v4fire-cli",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Tools for creating V4Fire blocks and pages from CLI",
   "main": "index.js",
   "bin": {
     "v4fire": "bin/cli.js"
   },
   "scripts": {
+    "test": "mocha tests/**/**.test.js",
     "newversion": "npm test && npm version patch --no-git-tag-version && npm run newversiongit && npm publish ./",
     "newversiongit": "git add --all  && git commit -m \"New version $npm_package_version. Read more https://github.com/V4Fire/cli/releases/tag/$npm_package_version \" && git tag $npm_package_version && git push --tags origin master"
   },
-  "devDependencies": {},
   "keywords": [
     "cli",
     "v4fire"
@@ -24,8 +24,33 @@
   "dependencies": {
     "@v4fire/client": "^3.0.0-rc.59",
     "@v4fire/core": "^3.24.0",
+    "@v4fire/linters": "^1.5.5",
     "chalk": "^4.1.0",
     "fs-extra": "^9.0.1",
     "yargs": "^15.4.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "husky": "^4.2.5",
+    "lint-staged": ">=10",
+    "mocha": "^8.1.2",
+    "prettier": "^2.1.1"
+  },
+  "mocha": {
+    "file": [
+      "tests/staff/bootstrap.js"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js|json}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{js,css,md}": "prettier --write"
   }
 }

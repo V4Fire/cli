@@ -1,5 +1,5 @@
-const MakeController = require('./make/make');
-const RenameController = require('./rename/rename');
+const MakeController = require('./make');
+const RenameController = require('./rename');
 
 module.exports = {
 	MakeController,

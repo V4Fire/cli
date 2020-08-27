@@ -1,0 +1,8 @@
+- namespace [%fileName%]
+
+- include 'super/i-block'|b as placeholder
+
+- @@ignore
+- template index() extends ['i-block'].index
+	- block body
+		Hello world!

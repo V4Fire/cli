@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "./node_modules/@v4fire/linters/.eslintrc"
+  ],
+  "rules": {
+    "no-unused-expressions": "off",
+    "import/no-nodejs-modules": "off"
+  },
+  "env": {
+    "mocha": true
+  }
+}

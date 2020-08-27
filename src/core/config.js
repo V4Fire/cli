@@ -1,0 +1,69 @@
+/**
+ * @typedef { import("./interface").Config }
+ * @interface IConfig
+ */
+class Config {
+	/**
+	 * @type {IConfig}
+	 */
+	opt;
+
+	/**
+	 * @type {VirtualFileSystem}
+	 */
+	vfs;
+
+	get command() {
+		const [command] = this.opt._ || [this.opt.command];
+		return command || 'make';
+	}
+
+	get path() {
+		if (!this.opt.path) {
+			return this.vfs.resolve(
+				process.cwd(),
+				this.subject === 'page' ? './src/pages' : './src/base'
+			);
+		}
+
+		return this.vfs.resolve(this.opt.path);
+	}
+
+	get subject() {
+		return this.opt.subject || 'block';
+	}
+
+	get reporter() {
+		return this.opt.reporter || 'json';
+	}
+
+	get template() {
+		return this.opt.template || 'default';
+	}
+
+	get extend() {
+		if (!this.opt.extend || this.opt.extend === 'default') {
+			return this.subject === 'block' ? 'i-block' : 'i-dynamic-page';
+		}
+
+		return this.opt.extend;
+	}
+
+	/**
+	 * @param {IConfig} options
+	 * @param {VirtualFileSystem} vfs
+	 */
+	constructor(options, vfs) {
+		this.opt = options;
+		this.vfs = vfs;
+
+		Object.keys(options).forEach((key) => {
+			const descriptor = Object.getOwnPropertyDescriptor(Config.prototype, key);
+			if (!descriptor) {
+				this[key] = options[key];
+			}
+		});
+	}
+}
+
+exports.Config = Config;
