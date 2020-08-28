@@ -71,4 +71,101 @@ describe('Cli test', () => {
 			});
 		});
 	});
+
+	describe('Test reporters', () => {
+		describe('silent', () => {
+			it('should send nothing into output', (done) => {
+				const app = getApplication();
+
+				exec(
+					'node',
+					[
+						app.vfs.resolve(__dirname, '../bin/cli'),
+						'make',
+						'page',
+						'point',
+						'--reporter',
+						'silent'
+					],
+					(error, stdout) => {
+						if (error) {
+							throw error;
+						}
+
+						expect(app.vfs.exists('./src/pages/p-point/p-point.ss')).is.true;
+						expect(stdout).equals('');
+
+						done();
+					}
+				);
+			});
+		});
+
+		describe('raw', () => {
+			it('should send some information into output', (done) => {
+				const app = getApplication();
+
+				exec(
+					'node',
+					[
+						app.vfs.resolve(__dirname, '../bin/cli'),
+						'make',
+						'page',
+						'point',
+						'--reporter',
+						'raw'
+					],
+					(error, stdout) => {
+						if (error) {
+							throw error;
+						}
+
+						expect(app.vfs.exists('./src/pages/p-point/p-point.ss')).is.true;
+						expect(stdout).equals(
+							'[34mCommand:make[39m\n' +
+								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/CHANGELOG.MD[39m\n' +
+								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/README.MD[39m\n' +
+								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/p-point.styl[39m\n' +
+								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/p-point.ss[39m\n' +
+								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/p-point.ts[39m\n' +
+								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/index.js[39m\n' +
+								'[34mResult: success[39m\n'
+						);
+
+						done();
+					}
+				);
+			});
+		});
+
+		describe('json', () => {
+			it('should not send only JSON into output', (done) => {
+				const app = getApplication();
+
+				exec(
+					'node',
+					[
+						app.vfs.resolve(__dirname, '../bin/cli'),
+						'make',
+						'page',
+						'point',
+						'--reporter',
+						'json'
+					],
+					(error, stdout) => {
+						if (error) {
+							throw error;
+						}
+
+						expect(app.vfs.exists('./src/pages/p-point/p-point.ss')).is.true;
+						expect(stdout).equals(
+							'{"status":true,"data":{"message":"success"}}\n'
+						);
+
+						done();
+					}
+				);
+			});
+		});
+	});
 });
