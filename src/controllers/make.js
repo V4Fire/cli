@@ -1,5 +1,4 @@
 const {Controller} = require('../core/controller');
-const {camelize, ucfirst} = require('../core/helpers');
 
 class MakeController extends Controller {
 	async run() {
@@ -38,6 +37,7 @@ class MakeController extends Controller {
 				newFile = this.vfs.resolve(destination, this.replaceNames(file, name));
 
 			if (!this.vfs.exists(newFile) || this.config.override) {
+				this.log.msg(`File:${newFile}`);
 				this.vfs.writeFile(newFile, this.replaceNames(data, name));
 			}
 		}

@@ -49,9 +49,9 @@ const options = yargs
 	})
 	.option('reporter', {
 		alias: 'r',
-		default: 'json',
+		default: 'raw',
 		describe: 'Reporter name',
-		choices: ['json', 'plain', 'silent']
+		choices: ['json', 'raw', 'silent']
 	})
 	.option('template', {
 		alias: 't',

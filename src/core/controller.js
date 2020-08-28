@@ -15,12 +15,19 @@ class Controller {
 	vfs;
 
 	/**
+	 * @type {Logger}
+	 */
+	log;
+
+	/**
 	 * @param {IConfig} config
 	 * @param {VirtualFileSystem} vfs
+	 * @param {Logger} vfs
 	 */
-	constructor(config, vfs) {
+	constructor(config, vfs, log) {
 		this.config = config;
 		this.vfs = vfs;
+		this.log = log;
 	}
 
 	/**

@@ -36,6 +36,15 @@ class RenameController extends Controller {
 					? this.vfs.resolve(source, newName + ext.toLowerCase())
 					: sourceFile;
 
+			this.log.msg(
+				`File:${sourceFile} => ${this.replaceNames(
+					sourceFile,
+					newName,
+					baseName,
+					false
+				)}`
+			);
+
 			this.vfs.writeFile(
 				newFile,
 				this.replaceNames(data, newName, baseName, false)

@@ -1,7 +1,12 @@
-const
-	colors = require('chalk');
+const colors = require('chalk');
 
 class Logger {
+	reporter;
+
+	constructor(reporter) {
+		this.reporter = reporter;
+	}
+
 	/**
 	 * Console text with some color
 	 *
@@ -10,7 +15,9 @@ class Logger {
 	 * @private
 	 */
 	log(text, color = colors.grey) {
-		console.log(color(text));
+		if (this.reporter === 'raw') {
+			console.log(color(text));
+		}
 	}
 
 	/**
@@ -38,4 +45,4 @@ class Logger {
 	}
 }
 
-module.exports.log = new Logger();
+module.exports.Logger = Logger;
