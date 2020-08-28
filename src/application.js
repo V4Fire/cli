@@ -45,9 +45,9 @@ class Application {
 
 			await controller.run();
 
-			this.sendToReporter({
-				message: 'success'
-			});
+			this.sendToReporter({});
+
+			this.log.info('Result: success');
 		} catch (e) {
 			this.sendToReporter(e);
 		}

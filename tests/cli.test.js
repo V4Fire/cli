@@ -160,9 +160,7 @@ describe('Cli test', () => {
 						}
 
 						expect(app.vfs.exists('./src/pages/p-point/p-point.ss')).is.true;
-						expect(stdout).equals(
-							'{"status":true,"data":{"message":"success"}}\n'
-						);
+						expect(stdout).equals('{"status":true,"data":{}}\n');
 
 						done();
 					}
