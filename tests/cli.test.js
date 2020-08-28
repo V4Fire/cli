@@ -121,15 +121,17 @@ describe('Cli test', () => {
 						}
 
 						expect(app.vfs.exists('./src/pages/p-point/p-point.ss')).is.true;
-						expect(stdout).equals(
-							'[34mCommand:make[39m\n' +
-								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/CHANGELOG.MD[39m\n' +
-								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/README.MD[39m\n' +
-								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/p-point.styl[39m\n' +
-								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/p-point.ss[39m\n' +
-								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/p-point.ts[39m\n' +
-								'[90mFile:/Users/v-chupurnov/WebstormProjects/v4fire-cli/src/pages/p-point/index.js[39m\n' +
-								'[34mResult: success[39m\n'
+						expect(
+							stdout.replace(/\[[0-9]+m/g, '').replace(/[^a-z-A-Z/:.\n\s]/g, '')
+						).equals(
+							'Command:make\n' +
+								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/CHANGELOG.MD\n' +
+								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/README.MD\n' +
+								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/p-point.styl\n' +
+								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/p-point.ss\n' +
+								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/p-point.ts\n' +
+								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/index.js\n' +
+								'Result: success\n'
 						);
 
 						done();
