@@ -7,7 +7,7 @@ interface IConfig {
 	subject: 'block' | 'page';
 	command?: 'make' | 'rename';
 	_: [this['command']];
-	reporter: 'json' | 'plain' | 'silent';
+	reporter: 'json' | 'raw' | 'silent';
 	template: 'default' | 'mono' | 'functional';
 	extend: 'default' | 'i-block' | 'i-data' | 'i-dynamic-page' | 'i-static-page';
 }
