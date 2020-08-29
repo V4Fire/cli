@@ -22,7 +22,7 @@ class Controller {
 	/**
 	 * @param {IConfig} config
 	 * @param {VirtualFileSystem} vfs
-	 * @param {Logger} vfs
+	 * @param {Logger} log
 	 */
 	constructor(config, vfs, log) {
 		this.config = config;
