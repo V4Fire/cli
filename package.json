@@ -27,7 +27,8 @@
     "@v4fire/linters": "^1.5.5",
     "chalk": "^4.1.0",
     "fs-extra": "^9.0.1",
-    "yargs": "^15.4.1"
+    "yargs": "^15.4.1",
+    "typescript": "3.9.7"
   },
   "devDependencies": {
     "chai": "^4.2.0",
