@@ -3,7 +3,7 @@ const reporters = require('./core/reporters/index');
 const controllers = require('./controllers/index');
 const {Config} = require('./core/config');
 const {VirtualFileSystem} = require('./core/vfs');
-const {ucfirst} = require('./core/helpers');
+const {ucfirst, camelize} = require('./core/helpers');
 const {Logger} = require('./core/log');
 
 class Application {
@@ -33,7 +33,7 @@ class Application {
 
 			this.log.info(`Command:${command}`);
 
-			const ControllerName = `${ucfirst(command)}Controller`;
+			const ControllerName = `${ucfirst(camelize(command))}Controller`;
 
 			const Controller = controllers[ControllerName];
 

@@ -14,6 +14,16 @@ class VirtualFileSystem {
 	}
 
 	/**
+	 * Get directory name from path
+	 *
+	 * @param {string} filePath
+	 * @returns {string}
+	 */
+	dirname(filePath) {
+		return path.dirname(filePath);
+	}
+
+	/**
 	 * Current file is directory
 	 *
 	 * @param {string} filepath
@@ -115,12 +125,22 @@ class VirtualFileSystem {
 	/**
 	 * Calculate relative path
 	 *
-	 * @param filepath
+	 * @param {string} filepath
 	 * @returns {string}
 	 */
 	pathByRoot(filepath) {
 		const root = `${this.resolve(process.cwd(), 'src')}${path.sep}`;
 		return this.resolve(filepath).replace(root, '') + path.sep;
+	}
+
+	/**
+	 * Removes trailing separator from path string
+	 *
+	 * @param {string} filepath
+	 * @returns {string}
+	 */
+	removeTrailingSep(filepath) {
+		return filepath.replace(new RegExp(`${path.sep}$`), '');
 	}
 }
 

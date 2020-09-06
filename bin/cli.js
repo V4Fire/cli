@@ -4,6 +4,21 @@ const yargs = require('yargs');
 const {Application} = require('../src/application');
 
 const options = yargs
+	.command(
+		'make-test <path> [runners..]',
+		'Make test for module or component',
+		(yargs) => {
+			yargs
+				.positional('path', {
+					demandOption: true,
+					type: 'string'
+				})
+				.positional('runners', {
+					type: 'string'
+				});
+		}
+	)
+
 	.command('make <subject> <name> [path]', 'Make block or page', (yargs) => {
 		yargs
 			.positional('subject', {
@@ -77,6 +92,14 @@ const options = yargs
 	.example('v4fire make block b-point', 'Make i-block b-point')
 	.example('v4fire make block point', 'Make i-block b-point')
 	.example('v4fire make page card', 'Make i-dynamic-page p-card')
+	.example(
+		'v4fire make-test src/core/view-history',
+		'Make tests for view-history module'
+	)
+	.example(
+		'v4fire make-test src/base/b-slider',
+		'Make tests for b-slider component'
+	)
 	.epilogue('MIT').argv;
 
 const app = new Application(options);
