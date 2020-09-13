@@ -1,6 +1,6 @@
 {
   "name": "v4fire-cli",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Tools for creating V4Fire blocks and pages from CLI",
   "main": "index.js",
   "bin": {
