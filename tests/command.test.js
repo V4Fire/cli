@@ -105,8 +105,10 @@ describe('Exec command', () => {
 			expect(app.vfs.exists('./src/base/b-slider/test/index.js')).is.true;
 			expect(app.vfs.exists('./src/base/b-slider/test/runners/analytics.js')).is
 				.true;
+
 			expect(app.vfs.exists('./src/base/b-slider/test/runners/events.js')).is
 				.true;
+
 			expect(app.vfs.exists('./src/base/b-slider/test/runners/render.js')).is
 				.true;
 		});
