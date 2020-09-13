@@ -6,5 +6,5 @@ About bName
 
 ## How use
 ```
-<b-name
+< b-name
 ```
