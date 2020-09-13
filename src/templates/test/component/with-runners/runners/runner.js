@@ -7,7 +7,9 @@ const h = include('tests/helpers');
  */
 module.exports = (page) => {
 	describe('b-name runner', () => {
-		let bNameComponent, bNameNode;
+		let
+			bNameComponent,
+			bNameNode;
 
 		const scheme = [
 			{

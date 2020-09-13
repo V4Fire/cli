@@ -14,7 +14,9 @@ module.exports = async (page, params) => {
 	await h.utils.setup(page, params.context);
 
 	describe('name', () => {
-		let bDummyComponent, bDummyNode;
+		let
+			bDummyComponent,
+			bDummyNode;
 
 		beforeAll(async () => {
 			bDummyComponent = await h.component.getComponentById(

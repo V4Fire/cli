@@ -7,7 +7,9 @@ const h = include('tests/helpers');
  */
 module.exports = (page) => {
 	describe('name runner', () => {
-		let bDummyComponent, bDummyNode;
+		let
+			bDummyComponent,
+			bDummyNode;
 
 		beforeAll(async () => {
 			bDummyComponent = await h.component.getComponentById(

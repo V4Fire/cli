@@ -14,7 +14,9 @@ module.exports = async (page, params) => {
 	await h.utils.setup(page, params.context);
 
 	describe('b-name', () => {
-		let bNameComponent, bNameNode;
+		let
+			bNameComponent,
+			bNameNode;
 
 		const scheme = [
 			{
