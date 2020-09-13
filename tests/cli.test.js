@@ -133,31 +133,37 @@ describe('Cli test', () => {
 								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}CHANGELOG.MD\n`
 							)
 						);
+
 						expect(escapedStdout).matches(
 							new RegExp(
 								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}README.MD\n`
 							)
 						);
+
 						expect(escapedStdout).matches(
 							new RegExp(
 								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}p-point.styl\n`
 							)
 						);
+
 						expect(escapedStdout).matches(
 							new RegExp(
 								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}p-point.ss\n`
 							)
 						);
+
 						expect(escapedStdout).matches(
 							new RegExp(
 								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}p-point.ts\n`
 							)
 						);
+
 						expect(escapedStdout).matches(
 							new RegExp(
 								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}index.js\n`
 							)
 						);
+
 						expect(escapedStdout).matches(new RegExp('Result: success\n$'));
 
 						done();
