@@ -24,7 +24,6 @@ describe('Cli test', () => {
 						'true'
 					],
 					(error) => {
-						console.log('here');
 						if (error) {
 							throw error;
 						}
