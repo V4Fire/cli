@@ -2,9 +2,15 @@ const path = require('path');
 const ts = require('typescript');
 
 const {Controller} = require('../core/controller');
+const {AbstractSyntaxTree} = require('../core/ast');
 const {camelize, ucfirst} = require('../core/helpers');
 
 class MakeTestController extends Controller {
+	/**
+	 * @type {AbstractSyntaxTree}
+	 */
+	ast;
+
 	/**
 	 * Default name of component for module testing
 	 * @type {string}
@@ -12,7 +18,7 @@ class MakeTestController extends Controller {
 	defaultComponentName = 'b-dummy';
 
 	/**
-	 * Name of component for generating tests
+	 * Name of component tests being generated for
 	 * @returns {string}
 	 */
 	get component() {
@@ -38,8 +44,6 @@ class MakeTestController extends Controller {
 	}
 
 	async run() {
-		// TODO: добавить проверки на существование папок
-
 		this.updateCases(this.config.runners);
 		this.updateDemoPageDeps();
 
@@ -61,7 +65,7 @@ class MakeTestController extends Controller {
 	}
 
 	/**
-	 * Copies test folder from source to destination with
+	 * Copies test folder from source to destination with replacing component/module names
 	 *
 	 * @param source
 	 * @param destination
@@ -118,15 +122,13 @@ class MakeTestController extends Controller {
 	 * @param {string[]} runners
 	 */
 	updateCases(runners) {
-		const path = this.vfs.resolve('tests/cases.js'),
-			file = this.vfs.readFile(path);
+		const sourcePath = this.vfs.resolve('tests/cases.js');
 
-		// TODO: вынести в отдельный модуль
-		const source = ts.createSourceFile(
-			__filename,
-			file,
-			ts.ScriptTarget.Latest
-		);
+		if (!this.vfs.exists(sourcePath)) {
+			// TODO: логирование
+		}
+
+		const source = this.ast.createSourceFile(sourcePath);
 
 		const commentString = `// ${this.moduleOrComponentName}`,
 			testEntryPath = this.vfs.pathByRoot(
@@ -149,7 +151,7 @@ class MakeTestController extends Controller {
 			});
 		}
 
-		const casesNodeObject = this.findASTNodeObject(
+		const casesNodeObject = this.ast.findASTNodeObject(
 				source,
 				(node) => ts.SyntaxKind[node.kind] === 'ArrayLiteralExpression'
 			),
@@ -163,7 +165,7 @@ class MakeTestController extends Controller {
 			insertPosition
 		)}`;
 
-		this.vfs.writeFile(path, newFile);
+		this.vfs.writeFile(sourcePath, newFile);
 	}
 
 	/**
@@ -186,18 +188,12 @@ class MakeTestController extends Controller {
 		}
 
 		if (!page) {
+			// TODO: логирование
 			console.log('ERROR');
 		}
 
-		const path = this.vfs.resolve(`src/pages/${page}/index.js`),
-			file = this.vfs.readFile(path);
-
-		// TODO: вынести в отдельный модуль
-		const source = ts.createSourceFile(
-			__filename,
-			file,
-			ts.ScriptTarget.Latest
-		);
+		const sourcePath = this.vfs.resolve(`src/pages/${page}/index.js`),
+			source = this.ast.createSourceFile(sourcePath);
 
 		const depsNodeObject = this.findASTNodeObject(
 				source,
@@ -227,32 +223,7 @@ class MakeTestController extends Controller {
 			needNewLine ? '\n\t\t' : ' '
 		}'${this.component}'${file.slice(insertPosition)}`;
 
-		this.vfs.writeFile(path, newFile);
-	}
-
-	// TODO: Вынести в отдельный класс
-	/**
-	 * Finds in AST of `source` file and returns node matching `filter`
-	 *
-	 * @param {ts.SourceFile} source
-	 * @param {function} filter
-	 *
-	 * @returns {ts.Node | undefined}
-	 */
-	findASTNodeObject(source, filter) {
-		const cb = (node) => {
-			if (filter(node)) {
-				return node;
-			}
-
-			const res = ts.forEachChild(node, cb);
-
-			if (res) {
-				return res;
-			}
-		};
-
-		return ts.forEachChild(source, cb);
+		this.vfs.writeFile(sourcePath, newFile);
 	}
 
 	/**
@@ -265,7 +236,6 @@ class MakeTestController extends Controller {
 	 *
 	 * @returns {string}
 	 */
-	// eslint-disable-next-line no-unused-vars
 	replaceNames(content, newName, defName = 'b-name', runner = undefined) {
 		const result = content
 			.replace(RegExp(defName, 'g'), newName)
@@ -280,6 +250,12 @@ class MakeTestController extends Controller {
 		}
 
 		return result;
+	}
+
+	/** @override */
+	constructor(config, vfs, log) {
+		super(config, vfs, log);
+		this.ast = new AbstractSyntaxTree(vfs);
 	}
 }
 
