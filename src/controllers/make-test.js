@@ -84,6 +84,8 @@ class MakeTestController extends Controller {
 			this.replaceNames(indexFileData, this.moduleOrComponentName, defName)
 		);
 
+		this.log.msg(`New file: ${indexFileDestination}`);
+
 		const {runners} = this.config;
 
 		if (runners.length === 0) {
@@ -112,7 +114,7 @@ class MakeTestController extends Controller {
 				)
 			);
 
-			this.log.msg(`File:${runnerFileDestination}`);
+			this.log.msg(`New file: ${runnerFileDestination}`);
 		});
 	}
 
@@ -171,6 +173,7 @@ class MakeTestController extends Controller {
 		)}`;
 
 		this.vfs.writeFile(sourcePath, newFile);
+		this.log.msg(`Update file: ${sourcePath}`);
 	}
 
 	/**
@@ -234,6 +237,7 @@ class MakeTestController extends Controller {
 		}'${this.component}'${sourceFile.slice(insertPosition)}`;
 
 		this.vfs.writeFile(sourcePath, newFile);
+		this.log.msg(`Update file: ${sourcePath}`);
 	}
 
 	/**
