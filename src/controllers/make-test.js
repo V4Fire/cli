@@ -184,7 +184,17 @@ class MakeTestController extends Controller {
 			return;
 		}
 
-		const pages = this.vfs.readdir(this.vfs.resolve('src/pages'));
+		const pagesDirPath = this.vfs.resolve('src/pages');
+
+		if (!this.vfs.exists(pagesDirPath)) {
+			this.log.error(
+				`Components-demo page does not exist at ${pagesDirPath}.\nCreate it in order to add dependencies for tests.`
+			);
+
+			return;
+		}
+
+		const pages = this.vfs.readdir(pagesDirPath);
 
 		let page;
 
@@ -197,7 +207,7 @@ class MakeTestController extends Controller {
 
 		if (!page) {
 			this.log.error(
-				`Components-demo page does not exist at ${pages}.\nCreate it in order to add dependencies for tests.`
+				`Components-demo page does not exist at ${pagesDirPath}.\nCreate it in order to add dependencies for tests.`
 			);
 
 			return;
