@@ -100,6 +100,10 @@ const options = yargs
 		'v4fire make-test src/base/b-slider',
 		'Make tests for b-slider component'
 	)
+	.example(
+		'v4fire make-test src/base/b-slider analytics render events',
+		'Make tests for b-slider component with different runners'
+	)
 	.epilogue('MIT').argv;
 
 const app = new Application(options);
