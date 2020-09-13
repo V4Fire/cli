@@ -32,9 +32,6 @@ class MakeTestController extends Controller {
 
 		const destination = this.vfs.resolve(this.config.path, 'test');
 
-		console.log(destination);
-		console.log(source);
-
 		await this.copyTestFolder(source, destination);
 	}
 
