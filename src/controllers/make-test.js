@@ -17,6 +17,27 @@ class MakeTestController extends Controller {
 	 */
 	defaultComponentName = 'b-dummy';
 
+	async run() {
+		this.updateCases(this.config.runners);
+		this.updateDemoPageDeps();
+
+		const source = this.vfs.resolve(
+			__dirname,
+			'..',
+			'templates',
+			'test',
+			this.component === this.moduleOrComponentName ? 'component' : 'module',
+			this.config.runners.length === 0 ? 'simple' : 'with-runners'
+		);
+
+		const destination = this.vfs.resolve(this.config.path, 'test');
+
+		console.log(destination);
+		console.log(source);
+
+		await this.copyTestFolder(source, destination);
+	}
+
 	/**
 	 * Name of component tests being generated for
 	 * @returns {string}
@@ -41,27 +62,6 @@ class MakeTestController extends Controller {
 		}
 
 		return this.config.path.split(path.sep).pop();
-	}
-
-	async run() {
-		this.updateCases(this.config.runners);
-		this.updateDemoPageDeps();
-
-		const source = this.vfs.resolve(
-			__dirname,
-			'..',
-			'templates',
-			'test',
-			this.component === this.moduleOrComponentName ? 'component' : 'module',
-			this.config.runners.length === 0 ? 'simple' : 'with-runners'
-		);
-
-		const destination = this.vfs.resolve(this.config.path, 'test');
-
-		console.log(destination);
-		console.log(source);
-
-		await this.copyTestFolder(source, destination);
 	}
 
 	/**
