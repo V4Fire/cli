@@ -51,7 +51,10 @@ class Controller {
 	 */
 	replaceNames(content, newName, defName = 'b-name', defExtend = 'i-block') {
 		let result = content
-			.replace(/base\//g, this.vfs.pathByRoot(this.config.path))
+			.replace(
+				/base\//g,
+				this.vfs.toPosixPath(this.vfs.pathByRoot(this.config.path))
+			)
 			.replace(/{Date}/g, new Date().toISOString().substr(0, 10))
 			.replace(RegExp(defName, 'g'), newName)
 			.replace(RegExp(camelize(defName), 'g'), camelize(newName))
