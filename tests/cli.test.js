@@ -24,7 +24,6 @@ describe('Cli test', () => {
 						'true'
 					],
 					(error) => {
-						console.log('here');
 						if (error) {
 							throw error;
 						}
@@ -121,17 +120,20 @@ describe('Cli test', () => {
 						}
 
 						expect(app.vfs.exists('./src/pages/p-point/p-point.ss')).is.true;
+
 						expect(
 							stdout.replace(/\[[0-9]+m/g, '').replace(/[^a-z-A-Z/:.\n\s]/g, '')
-						).equals(
-							'Command:make\n' +
-								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/CHANGELOG.MD\n' +
-								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/README.MD\n' +
-								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/p-point.styl\n' +
-								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/p-point.ss\n' +
-								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/p-point.ts\n' +
-								'File:/Users/v-chupurnov/WebstormProjects/vfire-cli/src/pages/p-point/index.js\n' +
-								'Result: success\n'
+						).matches(
+							new RegExp(
+								'Command:make\n' +
+									'File:/(.*/)*src/pages/p-point/CHANGELOG.MD\n' +
+									'File:/(.*/)*src/pages/p-point/README.MD\n' +
+									'File:/(.*/)*src/pages/p-point/p-point.styl\n' +
+									'File:/(.*/)*src/pages/p-point/p-point.ss\n' +
+									'File:/(.*/)*src/pages/p-point/p-point.ts\n' +
+									'File:/(.*/)*src/pages/p-point/index.js\n' +
+									'Result: success\n'
+							)
 						);
 
 						done();

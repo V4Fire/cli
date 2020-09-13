@@ -45,6 +45,7 @@ describe('Exec command', () => {
 			expect(app2.vfs.readFile('./src/base/b-plot/b-plot.ts')).contains(
 				'bPlot'
 			);
+
 			expect(app2.vfs.readFile('./src/base/b-plot/b-plot.styl')).contains(
 				'b-plot'
 			);
@@ -75,6 +76,41 @@ describe('Exec command', () => {
 			expect(app2.vfs.readFile('./src/base/b-plot/b-plot.ts')).contains(
 				'extends iData'
 			);
+		});
+	});
+
+	describe('Make test', () => {
+		it('should create test without runners', async () => {
+			const app = getApplication({
+				path: 'src/base/b-slider',
+				command: 'make-test',
+				runners: []
+			});
+
+			await app.run();
+
+			expect(app.vfs.exists('./src/base/b-slider/test/index.js')).is.true;
+			expect(app.vfs.exists('./src/base/b-slider/test/runners')).is.false;
+		});
+
+		it('should create test with runners', async () => {
+			const app = getApplication({
+				path: 'src/base/b-slider',
+				command: 'make-test',
+				runners: ['analytics', 'events', 'render']
+			});
+
+			await app.run();
+
+			expect(app.vfs.exists('./src/base/b-slider/test/index.js')).is.true;
+			expect(app.vfs.exists('./src/base/b-slider/test/runners/analytics.js')).is
+				.true;
+
+			expect(app.vfs.exists('./src/base/b-slider/test/runners/events.js')).is
+				.true;
+
+			expect(app.vfs.exists('./src/base/b-slider/test/runners/render.js')).is
+				.true;
 		});
 	});
 });
