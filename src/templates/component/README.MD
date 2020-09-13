@@ -1,10 +1,11 @@
-# base/b-name/
+# base/b-name
 
 [Changelog](./CHANGELOG.md)
 
 About bName
 
-## How use
+## How to use
+
 ```
 < b-name
 ```

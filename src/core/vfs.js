@@ -130,7 +130,18 @@ class VirtualFileSystem {
 	 */
 	pathByRoot(filepath) {
 		const root = `${this.resolve(process.cwd(), 'src')}${path.sep}`;
+
 		return this.resolve(filepath).replace(root, '') + path.sep;
+	}
+
+	/**
+	 * Converts any given path to posix path (e.g. replaces `\` with `/`)
+	 *
+	 * @param {string} filepath
+	 * @returns {string}
+	 */
+	toPosixPath(filepath) {
+		return filepath.split(path.sep).join(path.posix.sep);
 	}
 
 	/**

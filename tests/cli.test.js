@@ -1,3 +1,4 @@
+const path = require('path');
 const exec = require('child_process').execFile;
 const {expect} = require('chai');
 const {getApplication} = require('./staff/helpers');
@@ -121,20 +122,49 @@ describe('Cli test', () => {
 
 						expect(app.vfs.exists('./src/pages/p-point/p-point.ss')).is.true;
 
-						expect(
-							stdout.replace(/\[[0-9]+m/g, '').replace(/[^a-z-A-Z/:.\n\s]/g, '')
-						).matches(
+						// Normalize stdout to get rid of reporter's special symbols (e.g. for coloring)
+						const escapedStdout = stdout
+							.replace(/\[[0-9]+m/g, '')
+							.replace(/[^a-z-A-Z/\\:.\n\s]/g, '');
+
+						expect(escapedStdout).matches(new RegExp('^Command:make\n'));
+						expect(escapedStdout).matches(
 							new RegExp(
-								'Command:make\n' +
-									'File:/(.*/)*src/pages/p-point/CHANGELOG.MD\n' +
-									'File:/(.*/)*src/pages/p-point/README.MD\n' +
-									'File:/(.*/)*src/pages/p-point/p-point.styl\n' +
-									'File:/(.*/)*src/pages/p-point/p-point.ss\n' +
-									'File:/(.*/)*src/pages/p-point/p-point.ts\n' +
-									'File:/(.*/)*src/pages/p-point/index.js\n' +
-									'Result: success\n'
+								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}CHANGELOG.MD\n`
 							)
 						);
+
+						expect(escapedStdout).matches(
+							new RegExp(
+								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}README.MD\n`
+							)
+						);
+
+						expect(escapedStdout).matches(
+							new RegExp(
+								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}p-point.styl\n`
+							)
+						);
+
+						expect(escapedStdout).matches(
+							new RegExp(
+								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}p-point.ss\n`
+							)
+						);
+
+						expect(escapedStdout).matches(
+							new RegExp(
+								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}p-point.ts\n`
+							)
+						);
+
+						expect(escapedStdout).matches(
+							new RegExp(
+								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}index.js\n`
+							)
+						);
+
+						expect(escapedStdout).matches(new RegExp('Result: success\n$'));
 
 						done();
 					}
