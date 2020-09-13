@@ -161,10 +161,12 @@ class MakeTestController extends Controller {
 			cases = casesNodeObject.elements,
 			insertPosition = cases.end;
 
-		const newFile = `${file.slice(
+		const sourceFile = this.vfs.readFile(sourcePath);
+
+		const newFile = `${sourceFile.slice(
 			0,
 			insertPosition
-		)},\n\n\t${commentString}${caseStrings.join(',')}${file.slice(
+		)},\n\n\t${commentString}${caseStrings.join(',')}${sourceFile.slice(
 			insertPosition
 		)}`;
 
@@ -201,7 +203,7 @@ class MakeTestController extends Controller {
 		const sourcePath = this.vfs.resolve(`src/pages/${page}/index.js`),
 			source = this.ast.createSourceFile(sourcePath);
 
-		const depsNodeObject = this.findASTNodeObject(
+		const depsNodeObject = this.ast.findASTNodeObject(
 				source,
 				(node) => node.expression?.name?.escapedText === 'dependencies'
 			),
@@ -220,14 +222,16 @@ class MakeTestController extends Controller {
 			lastStringDep = deps[deps.length - 1];
 		}
 
+		const sourceFile = this.vfs.readFile(sourcePath);
+
 		const insertPosition = lastStringDep.end,
 			needNewLine =
-				/\r|\n|\r\n/.test(file[insertPosition]) ||
-				/\r|\n|\r\n/.test(file[insertPosition + 1]);
+				/\r|\n|\r\n/.test(sourceFile[insertPosition]) ||
+				/\r|\n|\r\n/.test(sourceFile[insertPosition + 1]);
 
-		const newFile = `${file.slice(0, insertPosition)},${
+		const newFile = `${sourceFile.slice(0, insertPosition)},${
 			needNewLine ? '\n\t\t' : ' '
-		}'${this.component}'${file.slice(insertPosition)}`;
+		}'${this.component}'${sourceFile.slice(insertPosition)}`;
 
 		this.vfs.writeFile(sourcePath, newFile);
 	}
