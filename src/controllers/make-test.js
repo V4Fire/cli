@@ -111,6 +111,8 @@ class MakeTestController extends Controller {
 					runner
 				)
 			);
+
+			this.log.msg(`File:${runnerFileDestination}`);
 		});
 	}
 
@@ -122,7 +124,11 @@ class MakeTestController extends Controller {
 		const sourcePath = this.vfs.resolve('tests/cases.js');
 
 		if (!this.vfs.exists(sourcePath)) {
-			// TODO: логирование
+			this.log.error(
+				`File ${sourcePath} does not exist.\nCreate it and write a basic structure of it in order to generate cases.`
+			);
+
+			return;
 		}
 
 		const source = this.ast.createSourceFile(sourcePath);
@@ -185,8 +191,11 @@ class MakeTestController extends Controller {
 		}
 
 		if (!page) {
-			// TODO: логирование
-			console.log('ERROR');
+			this.log.error(
+				`Components-demo page does not exist at ${pages}.\nCreate it in order to add dependencies for tests.`
+			);
+
+			return;
 		}
 
 		const sourcePath = this.vfs.resolve(`src/pages/${page}/index.js`),
