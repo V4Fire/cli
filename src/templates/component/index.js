@@ -1,1 +1,2 @@
-package('b-name').extends('i-block');
+package('b-name')
+    .extends('i-block');

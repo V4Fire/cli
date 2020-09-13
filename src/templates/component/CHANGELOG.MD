@@ -9,6 +9,6 @@ Changelog
 > - :house:      [Internal]
 > - :nail_care:  [Polish]
 
-### 1.0.0 ({Date}) @YourName
+### ({Date}) @YourName
 
 * Released
