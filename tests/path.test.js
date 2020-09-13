@@ -31,6 +31,6 @@ describe('Change path option', () => {
 
 		expect(
 			app.vfs.readFile('./src/base/test/best/pop/b-test/README.MD')
-		).contains('# base/test/best/pop/b-test/');
+		).contains('# base/test/best/pop/b-test');
 	});
 });
