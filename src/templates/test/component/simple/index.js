@@ -36,6 +36,7 @@ module.exports = async (page, params) => {
 				page,
 				'b-name-component'
 			);
+
 			bNameNode = await page.$('#b-name-component');
 		});
 

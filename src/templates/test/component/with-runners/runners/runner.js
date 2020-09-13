@@ -29,6 +29,7 @@ module.exports = (page) => {
 				page,
 				'b-name-component'
 			);
+
 			bNameNode = await page.$('#b-name-component');
 		});
 

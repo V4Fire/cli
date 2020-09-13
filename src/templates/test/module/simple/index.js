@@ -23,6 +23,7 @@ module.exports = async (page, params) => {
 				page,
 				'dummy-component'
 			);
+
 			bDummyNode = await h.dom.waitForEl(page, '#dummy-component');
 		});
 

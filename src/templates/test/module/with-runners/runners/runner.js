@@ -16,6 +16,7 @@ module.exports = (page) => {
 				page,
 				'b-dummy-component'
 			);
+
 			bDummyNode = await h.dom.waitForEl(page, '#b-dummy-component');
 		});
 
