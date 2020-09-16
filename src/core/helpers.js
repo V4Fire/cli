@@ -12,24 +12,27 @@ exports.camelize = (str) =>
 exports.ucfirst = (str) => str[0].toUpperCase() + str.substr(1);
 
 const gitconfig = require('git-config-path'),
-	parse = require('parse-git-config'),
-	extend = require('extend-shallow');
+	parse = require('parse-git-config');
 
 /**
  * Current user name
  */
-exports.gitUser = ((options) => {
-	const gc = gitconfig(extend({type: 'global'}, options && options.gitconfig));
-	options = extend({cwd: '/', path: gc}, options);
+exports.gitUser = (() => {
+	const gc = gitconfig({type: 'global'});
+	const options = {cwd: '/', path: gc};
 
-	const config = parse.sync(options) || {};
+	const config = parse.sync(options) || {},
+		defaultUser = {
+			name: 'John',
+			email: 'john@doe.com'
+		};
 
 	if (!config.user) {
-		return {};
+		return defaultUser;
 	}
 
 	return {
-		name: config.user.user || config.user.name || null,
-		email: config.user.name || null
+		name: config.user.user || config.user.name || defaultUser.name,
+		email: config.user.name || config.user.email || defaultUser.email
 	};
-})({});
+})();
