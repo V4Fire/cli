@@ -7,13 +7,58 @@ v4fire -h
 
 ## Usage
 
-### Make block
+### Make app
 
-TBD
+It is the easiest way to start use V4Fire
 
-### Rename block
+```bash
+v4fire make app my-app && cd my-app && npm run build
+```
 
-TBD
+It will create application ready for work.
+
+### Make block/page
+
+```bash
+v4fire make block hello-world
+```
+It will create `src/base/b-hello-world` component.
+
+```bash
+v4fire make block b-hello-world
+```
+Also, it will create `src/base/b-hello-world`.
+
+```bash
+v4fire make page hello-world
+```
+It will create `src/pages/p-hello-world` component.
+
+If you want create component inside another folder, you can set `path`
+
+```bash
+v4fire make block hello-world ./src/pages/p-index
+```
+It will generate `src/pages/p-index/b-hello-world` component.
+You can choose the type of component: `functional`, `mono` or `default`;
+
+```bash
+v4fire make block hello-world  --template functional
+```
+
+Also, you can change parent for component. Possible options:  `default`, `i-block`, `i-data`, `i-dynamic-page`, `i-static-page`
+
+```bash
+v4fire make block hello-world  --template functional --extend i-data
+```
+
+### Rename component
+
+```bash
+v4fire rename hello-world app-loader
+```
+
+It will rename  `src/base/b-hello-world` to `src/base/b-app-loader`.
 
 ### Make test
 

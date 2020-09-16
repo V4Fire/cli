@@ -1,6 +1,5 @@
 const assert = require('assert');
 const {Controller} = require('../core/controller');
-const {camelize} = require('../core/helpers');
 
 class RenameController extends Controller {
 	async run() {
