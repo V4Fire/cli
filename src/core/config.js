@@ -14,15 +14,36 @@ class Config {
 	vfs;
 
 	get command() {
-		const [command] = this.opt._ || [this.opt.command];
+		const command = this.commandNative;
+
+		if (command && /-/.test(command)) {
+			return command.split('-')[0];
+		}
+
 		return command || 'make';
+	}
+
+	get commandNative() {
+		const [command] = this.opt._ || [this.opt.command];
+		return command;
 	}
 
 	get path() {
 		if (!this.opt.path) {
 			return this.vfs.resolve(
 				process.cwd(),
-				this.subject === 'page' ? './src/pages' : './src/base'
+				(() => {
+					switch (this.subject) {
+						case 'page':
+							return './src/pages';
+
+						case 'block':
+							return './src/base';
+
+						default:
+							return './';
+					}
+				})()
 			);
 		}
 
@@ -30,7 +51,17 @@ class Config {
 	}
 
 	get subject() {
-		return this.opt.subject || 'block';
+		if (!this.opt.subject) {
+			const command = this.commandNative;
+
+			if (command && /-/.test(command)) {
+				return command.split('-')[1];
+			}
+
+			return 'block';
+		}
+
+		return this.opt.subject;
 	}
 
 	get reporter() {
@@ -59,6 +90,7 @@ class Config {
 
 		Object.keys(options).forEach((key) => {
 			const descriptor = Object.getOwnPropertyDescriptor(Config.prototype, key);
+
 			if (!descriptor) {
 				this[key] = options[key];
 			}

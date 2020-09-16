@@ -1,6 +1,7 @@
 interface IConfig {
 	debug?: boolean;
 	override?: boolean;
+	noInstall?: boolean;
 	path: string;
 	name: string;
 	newName?: string;

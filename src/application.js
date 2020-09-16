@@ -29,19 +29,19 @@ class Application {
 
 	async run() {
 		try {
-			const {command} = this.config;
+			const {command, subject} = this.config;
 
-			this.log.info(`Command:${command}`);
+			this.log.info(`Command:${command} ${subject}`);
 
-			const ControllerName = `${ucfirst(camelize(command))}Controller`;
+			const controller =
+				this.getControllerInstance(
+					`${ucfirst(camelize(`${command}-${subject}`))}Controller`
+				) ||
+				this.getControllerInstance(`${ucfirst(camelize(command))}Controller`);
 
-			const Controller = controllers[ControllerName];
-
-			if (typeof Controller !== 'function') {
-				throw new Error(`Unknown controller: ${ControllerName}`);
+			if (controller == null) {
+				throw new Error(`Unknown controller: ${controllerName}`);
 			}
-
-			const controller = new Controller(this.config, this.vfs, this.log);
 
 			await controller.run();
 
@@ -57,6 +57,20 @@ class Application {
 		const reporter = reporters[this.config.reporter];
 		assert.equal(typeof reporter, 'function');
 		reporter.call(this, e);
+	}
+
+	/**
+	 * @param {string} controllerName
+	 * @returns {null|Controller}
+	 */
+	getControllerInstance(controllerName) {
+		const Controller = controllers[controllerName];
+
+		if (typeof Controller !== 'function') {
+			return null;
+		}
+
+		return new Controller(this.config, this.vfs, this.log);
 	}
 }
 

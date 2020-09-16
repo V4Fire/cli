@@ -68,10 +68,13 @@ class VirtualFileSystem {
 	 * Write content into file
 	 *
 	 * @param {string} filepath
-	 * @param {string} data
+	 * @param {string|object} data
 	 */
 	writeFile(filepath, data) {
-		fs.writeFileSync(filepath, data);
+		fs.writeFileSync(
+			filepath,
+			typeof data === 'string' ? data : JSON.stringify(data, null, '\t')
+		);
 	}
 
 	/**

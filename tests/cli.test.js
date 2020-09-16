@@ -127,7 +127,7 @@ describe('Cli test', () => {
 							.replace(/\[[0-9]+m/g, '')
 							.replace(/[^a-z-A-Z/\\:.\n\s]/g, '');
 
-						expect(escapedStdout).matches(new RegExp('^Command:make\n'));
+						expect(escapedStdout).matches(new RegExp('^Command:make'));
 						expect(escapedStdout).matches(
 							new RegExp(
 								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}CHANGELOG.MD\n`

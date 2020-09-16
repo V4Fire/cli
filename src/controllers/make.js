@@ -11,37 +11,6 @@ class MakeController extends Controller {
 		await this.vfs.ensureDir(destination);
 		this.copyFolder(source, destination, name);
 	}
-
-	/**
-	 *
-	 * @param {string} source
-	 * @param {string} destination
-	 * @param {string} name
-	 * @private
-	 */
-	copyFolder(source, destination, name) {
-		const files = this.vfs.readdir(source);
-
-		for (const file of files) {
-			const fileName = this.vfs.resolve(source, file);
-
-			if (this.vfs.isDirectory(fileName)) {
-				if (file === this.config.template) {
-					this.copyFolder(fileName, destination, name);
-				}
-
-				continue;
-			}
-
-			const data = this.vfs.readFile(fileName),
-				newFile = this.vfs.resolve(destination, this.replaceNames(file, name));
-
-			if (!this.vfs.exists(newFile) || this.config.override) {
-				this.log.msg(`File:${newFile}`);
-				this.vfs.writeFile(newFile, this.replaceNames(data, name));
-			}
-		}
-	}
 }
 
 module.exports = MakeController;

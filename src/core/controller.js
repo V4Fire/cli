@@ -1,4 +1,4 @@
-const {camelize, ucfirst} = require('./helpers');
+const {camelize, ucfirst, gitUserName} = require('./helpers');
 
 /**
  * @typedef { import("./interface").Config }
@@ -40,6 +40,48 @@ class Controller {
 	}
 
 	/**
+	 * Copy files and directories from source to destination
+	 *
+	 * @param {string} source
+	 * @param {string} destination
+	 * @param {string} name
+	 * @param {boolean} withFolders
+	 * @private
+	 */
+	copyFolder(source, destination, name, withFolders = false) {
+		const files = this.vfs.readdir(source);
+
+		for (const file of files) {
+			const fileName = this.vfs.resolve(source, file);
+
+			if (this.vfs.isDirectory(fileName)) {
+				if (withFolders) {
+					this.log.msg(`Directory:${fileName}`);
+					this.vfs.ensureDir(this.vfs.resolve(destination, file));
+					this.copyFolder(
+						fileName,
+						this.vfs.resolve(destination, file),
+						name,
+						true
+					);
+				} else if (file === this.config.template) {
+					this.copyFolder(fileName, destination, name);
+				}
+
+				continue;
+			}
+
+			const data = this.vfs.readFile(fileName),
+				newFile = this.vfs.resolve(destination, this.replaceNames(file, name));
+
+			if (!this.vfs.exists(newFile) || this.config.override) {
+				this.log.msg(`File:${newFile}`);
+				this.vfs.writeFile(newFile, this.replaceNames(data, name));
+			}
+		}
+	}
+
+	/**
 	 * Rename all names to target name
 	 *
 	 * @param {string} content
@@ -56,6 +98,7 @@ class Controller {
 				this.vfs.toPosixPath(this.vfs.pathByRoot(this.config.path))
 			)
 			.replace(/{Date}/g, new Date().toISOString().substr(0, 10))
+			.replace(/@YourName/g, gitUserName)
 			.replace(RegExp(defName, 'g'), newName)
 			.replace(RegExp(camelize(defName), 'g'), camelize(newName))
 			.replace(
@@ -63,7 +106,8 @@ class Controller {
 				ucfirst(camelize(newName))
 			);
 
-		if (defExtend) {
+		// Replace extend
+		if (defExtend && this.config.subject !== 'app') {
 			result = result
 				.replace(RegExp(defExtend, 'g'), this.config.extend)
 				.replace(

@@ -27,7 +27,7 @@ const options = yargs
 				.positional('subject', {
 					default: 'block',
 					type: 'string',
-					choices: ['block', 'page', 'app', 'test']
+					choices: ['block', 'page', 'app']
 				})
 				.positional('name', {
 					demandOption: true,
@@ -63,6 +63,11 @@ const options = yargs
 	.option('override', {
 		alias: 'o',
 		describe: 'Override files',
+		default: false,
+		type: 'boolean'
+	})
+	.option('no-install', {
+		describe: 'No install dependencies',
 		default: false,
 		type: 'boolean'
 	})

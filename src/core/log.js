@@ -21,6 +21,14 @@ class Logger {
 	}
 
 	/**
+	 * Console warn
+	 * @param text
+	 */
+	warn(text) {
+		this.log(text, colors.green);
+	}
+
+	/**
 	 * Console error
 	 * @param text
 	 */
