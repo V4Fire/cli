@@ -15,7 +15,7 @@ class Controller {
 	vfs;
 
 	/**
-	 * @type {Logger}
+	 * @type {./log/Logger}
 	 */
 	log;
 

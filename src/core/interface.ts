@@ -4,7 +4,7 @@ interface IConfig {
 	path: string;
 	name: string;
 	newName?: string;
-	subject: 'block' | 'page';
+	subject: 'block' | 'page' | 'app' | 'test';
 	command?: 'make' | 'rename';
 	_: [this['command']];
 	reporter: 'json' | 'raw' | 'silent';

@@ -19,21 +19,25 @@ const options = yargs
 		}
 	)
 
-	.command('make <subject> <name> [path]', 'Make block or page', (yargs) => {
-		yargs
-			.positional('subject', {
-				default: 'block',
-				type: 'string',
-				choices: ['block', 'page']
-			})
-			.positional('name', {
-				demandOption: true,
-				type: 'string'
-			})
-			.positional('path', {
-				type: 'string'
-			});
-	})
+	.command(
+		'make <subject> <name> [path]',
+		'Make block, page or app',
+		(yargs) => {
+			yargs
+				.positional('subject', {
+					default: 'block',
+					type: 'string',
+					choices: ['block', 'page', 'app', 'test']
+				})
+				.positional('name', {
+					demandOption: true,
+					type: 'string'
+				})
+				.positional('path', {
+					type: 'string'
+				});
+		}
+	)
 	.command(
 		'rename <name> <new-name> [path]',
 		'Rename block or page',
@@ -89,6 +93,7 @@ const options = yargs
 		'v4fire rename b-loader b-loader-mini',
 		'Rename b-loader to b-loader-mini'
 	)
+	.example('v4fire make app', 'Make v4fire boilerplate')
 	.example('v4fire make block b-point', 'Make i-block b-point')
 	.example('v4fire make block point', 'Make i-block b-point')
 	.example('v4fire make page card', 'Make i-dynamic-page p-card')
