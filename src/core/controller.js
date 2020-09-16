@@ -1,4 +1,4 @@
-const {camelize, ucfirst, gitUserName} = require('./helpers');
+const {camelize, ucfirst, gitUser} = require('./helpers');
 
 /**
  * @typedef { import("./interface").Config }
@@ -98,7 +98,8 @@ class Controller {
 				this.vfs.toPosixPath(this.vfs.pathByRoot(this.config.path))
 			)
 			.replace(/{Date}/g, new Date().toISOString().substr(0, 10))
-			.replace(/@YourName/g, gitUserName)
+			.replace(/@YourName/g, gitUser.name)
+			.replace(/@YourFullName/g, `${gitUser.name}<${gitUser.email}>`)
 			.replace(RegExp(defName, 'g'), newName)
 			.replace(RegExp(camelize(defName), 'g'), camelize(newName))
 			.replace(

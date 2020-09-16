@@ -18,9 +18,18 @@ const gitconfig = require('git-config-path'),
 /**
  * Current user name
  */
-exports.gitUserName = ((options) => {
+exports.gitUser = ((options) => {
 	const gc = gitconfig(extend({type: 'global'}, options && options.gitconfig));
 	options = extend({cwd: '/', path: gc}, options);
+
 	const config = parse.sync(options) || {};
-	return config.user ? config.user.user || config.user.name : null;
+
+	if (!config.user) {
+		return {};
+	}
+
+	return {
+		name: config.user.user || config.user.name || null,
+		email: config.user.name || null
+	};
 })({});
