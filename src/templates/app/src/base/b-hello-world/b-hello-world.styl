@@ -1,0 +1,25 @@
+@import "super/i-block/i-block.styl"
+
+$p = {
+	borderColor: #CCC
+	bgColor: #f7f7f7
+}
+
+b-hello-world extends i-block
+	size 200px
+	margin auto
+	padding 16px
+	border 1px solid $p.borderColor
+
+	&__content
+		padding 16px
+		background $p.bgColor
+
+		h1
+			padding 8px 0
+
+	&__button
+		padding 16px
+
+	&__counter
+		font-size 12px
