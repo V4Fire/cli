@@ -2,7 +2,7 @@
 
 $p = {
 	borderColor: #CCC
-	bgColor: #f7f7f7
+	bgColor: #F7F7F7
 }
 
 b-hello-world extends i-block
@@ -10,6 +10,17 @@ b-hello-world extends i-block
 	margin auto
 	padding 16px
 	border 1px solid $p.borderColor
+	text-align center
+
+	:before
+		content ""
+
+		display block
+		size 100px
+		margin 16px
+
+		background img("assets/img/v4fire.png")
+		background-size cover
 
 	&__content
 		padding 16px
