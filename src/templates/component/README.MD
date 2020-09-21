@@ -1,6 +1,6 @@
 # base/b-name
 
-[Changelog](./CHANGELOG.md)
+[Changelog](./CHANGELOG.MD)
 
 About bName
 

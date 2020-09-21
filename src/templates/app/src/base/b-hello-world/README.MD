@@ -1,6 +1,6 @@
 # /Users/v-chupurnov/WebstormProjects/v4fire-cli/b-hello-world
 
-[Changelog](./CHANGELOG.md)
+[Changelog](./CHANGELOG.MD)
 
 About bHelloWorld
 
