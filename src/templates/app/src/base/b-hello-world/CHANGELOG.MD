@@ -9,7 +9,7 @@ Changelog
 > - :house:      [Internal]
 > - :nail_care:  [Polish]
 
-### (2020-09-16) @YourName
+## (2020-09-16) @YourName
 
 #### :rocket: New Feature
 

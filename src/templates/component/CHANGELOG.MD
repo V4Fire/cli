@@ -9,7 +9,7 @@ Changelog
 > - :house:      [Internal]
 > - :nail_care:  [Polish]
 
-### ({Date}) @YourName
+## ({Date}) @YourName
 
 #### :rocket: New Feature
 
