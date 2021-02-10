@@ -11,4 +11,6 @@ Changelog
 
 ### (2020-09-16) @YourName
 
+#### :rocket: New Feature
+
 * Released
