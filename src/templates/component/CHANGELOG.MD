@@ -11,4 +11,6 @@ Changelog
 
 ### ({Date}) @YourName
 
+#### :rocket: New Feature
+
 * Released
