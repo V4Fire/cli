@@ -29,6 +29,7 @@ describe('Exec command', () => {
 				expect(
 					app.vfs.exists('./test-app/src/base/b-hello-world/b-hello-world.ss')
 				).is.true;
+
 				expect(app.vfs.exists('./test-app/src/pages/p-root/p-root.ss')).is.true;
 				expect(app.vfs.exists('./test-app/package.json')).is.true;
 				expect(app.vfs.exists('./test-app/node_nodules')).is.false;
@@ -47,8 +48,8 @@ describe('Exec command', () => {
 			await app.run();
 
 			expect(app.vfs.exists('./src/base/b-test/b-test.ss')).is.true;
-			expect(app.vfs.exists('./src/base/b-test/CHANGELOG.MD')).is.true;
-			expect(app.vfs.exists('./src/base/b-test/README.MD')).is.true;
+			expect(app.vfs.exists('./src/base/b-test/CHANGELOG.md')).is.true;
+			expect(app.vfs.exists('./src/base/b-test/README.md')).is.true;
 
 			const app2 = getApplication({
 				command: 'rename',
@@ -60,8 +61,8 @@ describe('Exec command', () => {
 
 			expect(app2.vfs.exists('./src/base/b-test/b-test.ss')).is.false;
 			expect(app2.vfs.exists('./src/base/b-plot/b-plot.ss')).is.true;
-			expect(app2.vfs.exists('./src/base/b-plot/CHANGELOG.MD')).is.true;
-			expect(app2.vfs.exists('./src/base/b-plot/README.MD')).is.true;
+			expect(app2.vfs.exists('./src/base/b-plot/CHANGELOG.md')).is.true;
+			expect(app2.vfs.exists('./src/base/b-plot/README.md')).is.true;
 			expect(app2.vfs.readFile('./src/base/b-plot/b-plot.ts')).contains(
 				'bPlot'
 			);

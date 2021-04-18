@@ -130,13 +130,13 @@ describe('Cli test', () => {
 						expect(escapedStdout).matches(new RegExp('^Command:make'));
 						expect(escapedStdout).matches(
 							new RegExp(
-								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}CHANGELOG.MD\n`
+								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}CHANGELOG.md\n`
 							)
 						);
 
 						expect(escapedStdout).matches(
 							new RegExp(
-								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}README.MD\n`
+								`File:.*src\\${path.sep}pages\\${path.sep}p-point\\${path.sep}README.md\n`
 							)
 						);
 

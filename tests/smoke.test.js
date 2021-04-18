@@ -14,7 +14,7 @@ describe('Smoke v4fire test', () => {
 				await app.run();
 
 				expect(app.vfs.exists('./src/base/b-test/b-test.ss')).is.true;
-				expect(app.vfs.readFile('./src/base/b-test/CHANGELOG.MD')).contains(
+				expect(app.vfs.readFile('./src/base/b-test/CHANGELOG.md')).contains(
 					new Date().toISOString().substr(0, 10)
 				);
 			});

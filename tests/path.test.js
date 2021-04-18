@@ -15,7 +15,7 @@ describe('Change path option', () => {
 		expect(app.vfs.exists('./src/base/test/best/pop/b-test/b-test.ss')).is.true;
 	});
 
-	it('should change relative path inside MD files', async () => {
+	it('should change relative path inside .md files', async () => {
 		const app = getApplication({
 			command: 'make',
 			subject: 'block',
@@ -30,7 +30,7 @@ describe('Change path option', () => {
 		).contains('[[include:base/test/best/pop/b-test/README.md]]');
 
 		expect(
-			app.vfs.readFile('./src/base/test/best/pop/b-test/README.MD')
+			app.vfs.readFile('./src/base/test/best/pop/b-test/README.md')
 		).contains('# base/test/best/pop/b-test');
 	});
 });
