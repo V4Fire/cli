@@ -40,10 +40,14 @@ class FixChangelogController extends Controller {
 				this.returnBoilerplate
 			];
 
-			const newContent = actions.reduce((acc, el) => el(acc), fileContent);
+			const newContent = actions.reduce(
+				(acc, el) => el.call(this, acc),
+				fileContent
+			);
 
 			if (newContent !== fileContent) {
 				this.log.info(`Updating file "${file}"`);
+				this.vfs.writeFile(file, fileContent);
 			}
 		});
 	}

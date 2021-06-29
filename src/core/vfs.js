@@ -164,7 +164,7 @@ class VirtualFileSystem {
 	 * @param {string} pattern
 	 * @returns {string[]}
 	 */
-	getFilesByGlobPatter(pattern) {
+	getFilesByGlobPattern(pattern) {
 		return glob.sync(pattern);
 	}
 }
