@@ -4,6 +4,9 @@ class FixChangelogController extends Controller {
 	// Storage of boilerplate from file
 	boilerplate = '';
 
+	// Divider of records in changelog;
+	divider = '## (';
+
 	run() {
 		const files = [
 			...this.vfs.getFilesByGlobPattern('!(node_modules)/**/CHANGELOG.md'),
@@ -12,7 +15,7 @@ class FixChangelogController extends Controller {
 			const lines = this.vfs.readFile(el).split('\n');
 
 			const isValidFile = lines.every((line) => {
-				if (line.startWith('## ')) {
+				if (line.startsWith('## ')) {
 					return Boolean(line.match(/##\s\(\d{4}-\d{2}-\d{2}\)/));
 				}
 
@@ -47,7 +50,7 @@ class FixChangelogController extends Controller {
 
 			if (newContent !== fileContent) {
 				this.log.info(`Updating file "${file}"`);
-				this.vfs.writeFile(file, fileContent);
+				this.vfs.writeFile(file, newContent);
 			}
 		});
 	}
@@ -60,11 +63,11 @@ class FixChangelogController extends Controller {
 	 * @return {string}
 	 */
 	saveBoilerplate(text) {
-		const elements = text.split('## (');
+		const elements = text.split(this.divider);
 
 		this.boilerplate = elements.splice(0, 1)[0];
 
-		return elements.join('## (');
+		return `${this.divider}${elements.join(this.divider)}`;
 	}
 
 	/**
@@ -111,7 +114,7 @@ class FixChangelogController extends Controller {
 	 * @return {string}
 	 */
 	sortRecords(text) {
-		const records = text.split('## (');
+		const records = text.split(this.divider);
 
 		// Last element should end with \n\n
 		while (!records[records.length - 1].endsWith('\n\n')) {
@@ -126,7 +129,7 @@ class FixChangelogController extends Controller {
 			records[records.length - 1].length - 1
 		);
 
-		return records.join('## (');
+		return records.join(this.divider);
 	}
 }
 
