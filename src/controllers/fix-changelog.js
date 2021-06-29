@@ -100,7 +100,7 @@ class FixChangelogController extends Controller {
 	}
 
 	/**
-	 * Сортирует записи в changeloge по датам
+	 * Sort records by dates
 	 *
 	 * @param {string} text
 	 *
