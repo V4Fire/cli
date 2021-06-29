@@ -18,6 +18,10 @@ const options = yargs
 				});
 		}
 	)
+	.command(
+		'fix-changelog',
+		'Fix conflicts in changelog files and sort records by date'
+	)
 
 	.command(
 		'make <subject> <name> [path]',
@@ -113,6 +117,10 @@ const options = yargs
 	.example(
 		'v4fire make-test src/base/b-slider analytics render events',
 		'Make tests for b-slider component with different runners'
+	)
+	.example(
+		'v4fire fix-changelog',
+		'Fix conflicts in changelogs and sort records'
 	)
 	.epilogue('MIT').argv;
 

@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-nodejs-modules
 const path = require('path');
 const fs = require('fs-extra');
+const glob = require('glob');
 
 class VirtualFileSystem {
 	/**
@@ -155,6 +156,16 @@ class VirtualFileSystem {
 	 */
 	removeTrailingSep(filepath) {
 		return filepath.replace(new RegExp(`${path.sep}$`), '');
+	}
+
+	/**
+	 * Scan directory for all file by glob pattern
+	 *
+	 * @param {string} pattern
+	 * @returns {string[]}
+	 */
+	getFilesByGlobPatter(pattern) {
+		return glob.sync(pattern);
 	}
 }
 
