@@ -36,23 +36,31 @@ class FixChangelogController extends Controller {
 
 			const fileContent = this.vfs.readFile(file);
 
-			const actions = [
-				this.clearConflicts,
-				this.saveBoilerplate,
-				this.sortRecords,
-				this.returnBoilerplate
-			];
-
-			const newContent = actions.reduce(
-				(acc, el) => el.call(this, acc),
-				fileContent
-			);
+			const newContent = this.updateChangelogContent(fileContent);
 
 			if (newContent !== fileContent) {
 				this.log.info(`Updating file "${file}"`);
 				this.vfs.writeFile(file, newContent);
 			}
 		});
+	}
+
+	/**
+	 * Applies all the methods in the right order to changelog content
+	 *
+	 * @param {string} text
+	 *
+	 * @return {string}
+	 */
+	updateChangelogContent(text) {
+		const actions = [
+			this.clearConflicts,
+			this.saveBoilerplate,
+			this.sortRecords,
+			this.returnBoilerplate
+		];
+
+		return actions.reduce((acc, el) => el.call(this, acc), text);
 	}
 
 	/**
