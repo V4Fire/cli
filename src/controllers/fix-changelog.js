@@ -37,8 +37,8 @@ class FixChangelogController extends Controller {
 			const fileContent = this.vfs.readFile(file);
 
 			const actions = [
-				this.saveBoilerplate,
 				this.clearConflicts,
+				this.saveBoilerplate,
 				this.sortRecords,
 				this.returnBoilerplate
 			];
@@ -97,7 +97,7 @@ class FixChangelogController extends Controller {
 			.split('\n')
 			.filter((el) => !(el.startsWith('<<<<<<<') || el.startsWith('>>>>>>>')))
 			.map((el) => {
-				if (el.startsWith('=======')) {
+				if (el === '=======') {
 					return '';
 				}
 
