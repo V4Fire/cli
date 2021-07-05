@@ -19,8 +19,8 @@ const options = yargs
 		}
 	)
 	.command(
-		'fix-changelog',
-		'Fix conflicts in changelog files and sort records by date'
+		'resolve-changelog',
+		'Resolve conflicts in changelog files and sort records by date'
 	)
 
 	.command(
@@ -119,8 +119,8 @@ const options = yargs
 		'Make tests for b-slider component with different runners'
 	)
 	.example(
-		'v4fire fix-changelog',
-		'Fix conflicts in changelogs and sort records'
+		'v4fire resolve-changelog',
+		'Resolve conflicts in changelogs and sort records'
 	)
 	.epilogue('MIT').argv;
 
