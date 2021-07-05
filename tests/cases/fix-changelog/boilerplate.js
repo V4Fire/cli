@@ -31,7 +31,7 @@ module.exports = {
 			output: boilerplateOutput
 		},
 		{
-			description: 'Cutted description',
+			description: 'Cut description',
 			input: boilerplateCase2Input,
 			output: boilerplateOutput
 		}
