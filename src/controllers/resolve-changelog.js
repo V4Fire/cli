@@ -1,10 +1,16 @@
 const {Controller} = require('../core/controller');
 
-class FixChangelogController extends Controller {
-	// Storage of boilerplate from file
+class ResolveChangelogController extends Controller {
+	/**
+	 * Storage of boilerplate from file
+	 * @type {string}
+	 */
 	boilerplate = '';
 
-	// Divider of records in changelog;
+	/**
+	 * Divider of records in changelog
+	 * @type {string}
+	 */
 	divider = '## (';
 
 	run() {
@@ -50,7 +56,7 @@ class FixChangelogController extends Controller {
 	 *
 	 * @param {string} text
 	 *
-	 * @return {string}
+	 * @returns {string}
 	 */
 	updateChangelogContent(text) {
 		const actions = [
@@ -68,7 +74,7 @@ class FixChangelogController extends Controller {
 	 *
 	 * @param {string} text
 	 *
-	 * @return {string}
+	 * @returns {string}
 	 */
 	saveBoilerplate(text) {
 		const elements = text.split(this.divider);
@@ -83,7 +89,7 @@ class FixChangelogController extends Controller {
 	 *
 	 * @param {string} text
 	 *
-	 * @return {string}
+	 * @returns {string}
 	 */
 	returnBoilerplate(text) {
 		const textWithBoilerplate = this.boilerplate + text;
@@ -98,7 +104,7 @@ class FixChangelogController extends Controller {
 	 *
 	 * @param {string} text
 	 *
-	 * @return {string}
+	 * @returns {string}
 	 */
 	clearConflicts(text) {
 		return text
@@ -119,15 +125,18 @@ class FixChangelogController extends Controller {
 	 *
 	 * @param {string} text
 	 *
-	 * @return {string}
+	 * @returns {string}
 	 */
 	sortRecords(text) {
-		const records = text.split(this.divider);
+		const records = text.split(this.divider).map((el) => {
+			let elementWithNewLines = el;
 
-		// Last element should end with \n\n
-		while (!records[records.length - 1].endsWith('\n\n')) {
-			records[records.length - 1] = `${records[records.length - 1]}\n`;
-		}
+			while (!elementWithNewLines.endsWith('\n\n')) {
+				elementWithNewLines += '\n';
+			}
+
+			return elementWithNewLines;
+		});
 
 		records.sort((a, b) => new Date(b.slice(0, 10)) - new Date(a.slice(0, 10)));
 
@@ -141,4 +150,4 @@ class FixChangelogController extends Controller {
 	}
 }
 
-module.exports = FixChangelogController;
+module.exports = ResolveChangelogController;

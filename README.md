@@ -65,10 +65,10 @@ v4fire rename hello-world app-loader
 
 It will rename `src/base/b-hello-world` to `src/base/b-app-loader`.
 
-### Fix changelog
+### Resolve changelog
 
 ```bash
-v4fire fix-changelog
+v4fire resolve-changelog
 ```
 
 It will scan repo for all files with name `CHANGELOG.md`, resolve conflicts and sort records by date.
