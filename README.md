@@ -71,7 +71,7 @@ It will rename `src/base/b-hello-world` to `src/base/b-app-loader`.
 v4fire fix-changelog
 ```
 
-It will scan repo for all files with name `CHANGELOG.md`, resolve conflicts and sort record by dates.
+It will scan repo for all files with name `CHANGELOG.md`, resolve conflicts and sort records by date.
 WARNING: Conflicts within the same record may not be resolved correctly!
 
 ### Make test
