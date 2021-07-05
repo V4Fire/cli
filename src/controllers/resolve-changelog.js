@@ -128,11 +128,13 @@ class ResolveChangelogController extends Controller {
 	 * @returns {string}
 	 */
 	sortRecords(text) {
-		const records = text.split(this.divider).map((el) => {
+		const records = text.split(this.divider).map((el, index) => {
 			let elementWithNewLines = el;
 
-			while (!elementWithNewLines.endsWith('\n\n')) {
-				elementWithNewLines += '\n';
+			if (index !== 0) {
+				while (!elementWithNewLines.endsWith('\n\n')) {
+					elementWithNewLines += '\n';
+				}
 			}
 
 			return elementWithNewLines;
