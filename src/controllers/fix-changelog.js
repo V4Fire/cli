@@ -79,7 +79,7 @@ class FixChangelogController extends Controller {
 	}
 
 	/**
-	 * Return boilerplate memory to text
+	 * Return boilerplate from memory to text
 	 *
 	 * @param {string} text
 	 *
