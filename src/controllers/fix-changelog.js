@@ -24,7 +24,7 @@ class FixChangelogController extends Controller {
 
 			if (!isValidFile) {
 				this.log.error(
-					`Skipping file "${el}". Reason: Some record don't match pattern '## (1970-01-01)'`
+					`Skipping file "${el}". Reason: Some record doesn't match pattern '## (yyyy-mm-dd)'`
 				);
 			}
 
