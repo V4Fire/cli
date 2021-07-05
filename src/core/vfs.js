@@ -159,7 +159,7 @@ class VirtualFileSystem {
 	}
 
 	/**
-	 * Scan directory for all file by glob pattern
+	 * Scan directory for files by glob pattern
 	 *
 	 * @param {string} pattern
 	 * @returns {string[]}
