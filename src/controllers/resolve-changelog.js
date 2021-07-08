@@ -22,7 +22,7 @@ class ResolveChangelogController extends Controller {
 
 			const isValidFile = lines.every((line) => {
 				if (line.startsWith('## ')) {
-					return Boolean(line.match(/##\s\(\d{4}-\d{2}-\d{2}\)/));
+					return Boolean(line.match(/^##\s\(\d{4}-\d{2}-\d{2}\)/));
 				}
 
 				return true;
@@ -61,6 +61,7 @@ class ResolveChangelogController extends Controller {
 	updateChangelogContent(text) {
 		const actions = [
 			this.clearConflicts,
+			this.normalizeEmptyLines,
 			this.saveBoilerplate,
 			this.sortRecords,
 			this.returnBoilerplate
@@ -121,6 +122,26 @@ class ResolveChangelogController extends Controller {
 	}
 
 	/**
+	 * Replaces all lines consisting only of spaces with empty line
+	 *
+	 * @param {string} text
+	 *
+	 * @returns {string}
+	 */
+	normalizeEmptyLines(text) {
+		return text
+			.split('\n')
+			.map((line) => {
+				if (line.match(/^\s+$/)) {
+					return '';
+				}
+
+				return line;
+			})
+			.join('\n');
+	}
+
+	/**
 	 * Sort records by dates
 	 *
 	 * @param {string} text
@@ -128,7 +149,7 @@ class ResolveChangelogController extends Controller {
 	 * @returns {string}
 	 */
 	sortRecords(text) {
-		const records = text.split(this.divider).map((el, index) => {
+		let records = text.split(this.divider).map((el, index) => {
 			let elementWithNewLines = el;
 
 			if (index !== 0) {
@@ -141,6 +162,8 @@ class ResolveChangelogController extends Controller {
 		});
 
 		records.sort((a, b) => new Date(b.slice(0, 10)) - new Date(a.slice(0, 10)));
+
+		records = [...new Set(records)];
 
 		// Last element after sort should have only one \n
 		records[records.length - 1] = records[records.length - 1].slice(

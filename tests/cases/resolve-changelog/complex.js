@@ -27,7 +27,17 @@ ${startOfConflict}
 
 * bar
 >>>>>>> master
+  
+## (2021-06-11) @baz
 
+#### :boom: Breaking Change
+
+* boom
+
+#### :rocket: New Feature
+
+* rocket
+ 
 ## (2021-06-11) @baz
 
 #### :boom: Breaking Change
