@@ -11,7 +11,7 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
-## Unreleased
+## v1.1.1 (2021-07-09)
 
 #### :rocket: New Feature
 
