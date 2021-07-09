@@ -11,6 +11,16 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.1.1 (2021-07-09)
+
+#### :rocket: New Feature
+
+- `resolve-changelog` - remove duplicates from changelog.
+
+#### :nail_care: Polish
+
+- `resolve-changelog` - delete trailing spaces from empty lines.
+
 ## v1.1.0 (2021-07-05)
 
 #### :rocket: New Feature

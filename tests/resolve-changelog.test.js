@@ -4,6 +4,7 @@ const complex = require('./cases/resolve-changelog/complex');
 const boilerplate = require('./cases/resolve-changelog/boilerplate');
 const sort = require('./cases/resolve-changelog/sort');
 const conflicts = require('./cases/resolve-changelog/conflicts');
+const emptyLines = require('./cases/resolve-changelog/normalizeEmptyLines');
 
 const ResolveChangelogController = require('../src/controllers/resolve-changelog');
 
@@ -43,6 +44,16 @@ describe('Resolve-changelog controller methods', () => {
 			it(caseEl.description, () => {
 				expect(
 					new ResolveChangelogController().clearConflicts(caseEl.input)
+				).to.equal(caseEl.output);
+			});
+		});
+	});
+
+	describe('normalizeEmptyLines', () => {
+		emptyLines.cases.forEach((caseEl) => {
+			it(caseEl.description, () => {
+				expect(
+					new ResolveChangelogController().normalizeEmptyLines(caseEl.input)
 				).to.equal(caseEl.output);
 			});
 		});
