@@ -11,6 +11,12 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.1.2 (2021-12-03)
+
+#### :house: Internal
+
+- migrate to npm8
+
 ## v1.1.1 (2021-07-09)
 
 #### :rocket: New Feature
