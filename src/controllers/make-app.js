@@ -56,6 +56,7 @@ class MakeAppController extends Controller {
 			this.log.warn(
 				'V4fire application ready for work but need install dependencies.'
 			);
+
 			this.log.info(`Run \`cd ${this.config.name} && yarn && npm run build\``);
 		}
 
