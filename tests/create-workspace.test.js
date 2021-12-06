@@ -34,16 +34,6 @@ describe('Create-workspace controller methods', () => {
 		});
 	});
 
-	describe('purifyGitURLFromPackageJSON', () => {
-		it('should return purified git url to dependency', () => {
-			expect(
-				controller.purifyGitURLFromPackageJSON(
-					'git+https://gitlab.edadeal.yandex-team.ru/frontend/core.git#npm8'
-				)
-			).to.equal('gitlab.edadeal.yandex-team.ru/frontend/core.git#npm8');
-		});
-	});
-
 	describe('getGitURLFromPackageJSON', () => {
 		it('should return valid git url from field repository with type object', () => {
 			expect(controller.getGitURLFromPackageJSON(packageJSON)).to.equal(

@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const { string } = require('yargs');
 const yargs = require('yargs');
 const {Application} = require('../src/application');
 
@@ -27,13 +26,14 @@ const options = yargs
 		'create-workspace',
 		'Create workspace for v4fire dependencies',
 		(yargs) => {
-			yargs.positional('root', {
-				default: 'workspace',
-				type: 'string'
-			})
-			.positional('package', {
-				type: 'string'
-			});
+			yargs
+				.positional('root', {
+					default: 'workspace',
+					type: 'string'
+				})
+				.positional('package', {
+					type: 'string'
+				});
 		}
 	)
 
