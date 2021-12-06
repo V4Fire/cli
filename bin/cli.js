@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const { string } = require('yargs');
 const yargs = require('yargs');
 const {Application} = require('../src/application');
 
@@ -21,6 +22,19 @@ const options = yargs
 	.command(
 		'resolve-changelog',
 		'Resolve conflicts in changelog files and sort records by date'
+	)
+	.command(
+		'create-workspace',
+		'Create workspace for v4fire dependencies',
+		(yargs) => {
+			yargs.positional('root', {
+				default: 'workspace',
+				type: 'string'
+			})
+			.positional('package', {
+				type: 'string'
+			});
+		}
 	)
 
 	.command(
