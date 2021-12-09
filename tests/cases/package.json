@@ -1,0 +1,14 @@
+{
+  "name": "@edadeal/search",
+  "version": "2.19.5",
+  "repository": {
+    "type": "git",
+    "url": "git@git.edadeal.yandex-team.ru:frontend/search.git"
+  },
+  "dependencies": {
+    "@edadeal/core": "git+https://gitlab.edadeal.yandex-team.ru/frontend/core.git#npm8",
+    "@edadeal/design-system": "git+https://gitlab.edadeal.yandex-team.ru/frontend/design-system.git#v.86",
+    "@v4fire/client": "git+https://github.com/V4Fire/Client.git#webpack-cli/v2",
+    "@v4fire/core": "^3.65.1"
+  }
+}
