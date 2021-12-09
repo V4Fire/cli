@@ -1,5 +1,3 @@
-'use strict';
-
 /*!
  * V4Fire cli
  * https://github.com/V4Fire/cli
@@ -40,7 +38,8 @@ class CreateWorkspaceController extends Controller {
 					{name} = this.getDependencyPackageInfo(dependency),
 					{gitURL, version} = this.getDependencyInfo(dependency);
 
-				await this.cloneGitRepo(gitURL, version, name);
+				const gitBranch = await this.getBranchFromGit(gitURL, version, name);
+				await this.cloneGitRepo(gitURL, gitBranch, name);
 				await this.initWorkspace(name);
 			})
 		);
@@ -61,16 +60,14 @@ class CreateWorkspaceController extends Controller {
 	 * Clones a git repository of the specified dependency into a workspace folder
 	 *
 	 * @param {string} gitURL - URL to the git repository to clone
-	 * @param {string} version - dependency version to clone
+	 * @param {string} branch - dependency git branch to clone
 	 * @param {string} packageName - name of the cloned package
 	 * @returns {!Promise<void>}
 	 */
-	async cloneGitRepo(gitURL, version, packageName) {
+	async cloneGitRepo(gitURL, branch, packageName) {
 		this.log.msg(`Cloning ${packageName}...`);
 
-		const command = `git clone ${gitURL} --single-branch --branch ${this.formatGitVersion(
-			version
-		)} ${this.workspaceRoot}/${packageName}`;
+		const command = `git clone ${gitURL} --single-branch --branch ${branch} ${this.workspaceRoot}/${packageName}`;
 
 		try {
 			await exec(command);
@@ -95,19 +92,33 @@ class CreateWorkspaceController extends Controller {
 	}
 
 	/**
-	 * Format version of dependency extracted from package.json
-	 * for semver versions convert 3.4.5 to v3.4.5
-	 * for deps with git branch name or commit hash do nothing
+	 * Getting properly branch name from git based on version from package.json
 	 *
+	 * @param {string} gitURL
 	 * @param {string} version
+	 * @param {string} packageName
 	 * @returns {string}
 	 */
-	formatGitVersion(version) {
-		if (/^\d+\.\d+\.\d+(?:-[\w-]+)?$/.test(version)) {
-			return `v${version}`;
+	async getBranchFromGit(gitURL, version, packageName) {
+		this.log.msg(`Getting right version of git branch/tag for ${packageName}...`);
+
+		let gitBranch;
+
+		try {
+			const {stdout} = await exec(`git ls-remote ${gitURL}`);
+
+			const branches = stdout.split('\n');
+			const versionRegExp = new RegExp(version, 'gm');
+			const fullBranchName = branches.find((branch) => versionRegExp.exec(branch));
+			const branch = fullBranchName.split('\t')[1];
+			gitBranch = /refs\/(heads|tags)\/(.*)/.exec(branch)[2];
+
+		} catch(err) {
+			throw new Error(`Error when getting git branch for ${packageName}`);
 		}
 
-		return version;
+		this.log.msg(`Successfully getting branch for ${packageName}: ${gitBranch}`);
+		return gitBranch;
 	}
 
 	/**
@@ -188,10 +199,10 @@ class CreateWorkspaceController extends Controller {
 
 		if (this.hasURLProtocol(dependencyVersion)) {
 			gitURL = this.createSSHGitURL(dependencyVersion);
-			version = /(?<=#).*$/.exec(gitVersionURL)[0];
+			version = /(?<=#).*$/.exec(dependencyVersion)[0];
 
 		} else {
-			version = /^\d+\.\d+\.\d+(?:-[\w-]+)?$/.exec(dependencyVersion)[0];
+			version = /\d+\.\d+\.\d+(?:-[\w-]+)?$/.exec(dependencyVersion)[0];
 		}
 
 		return {version, gitURL};
@@ -256,8 +267,7 @@ class CreateWorkspaceController extends Controller {
 			return [this.config.package];
 		}
 
-		const pzlrrcContent = this.vfs.readFile('.pzlrrc');
-		const {dependencies} = JSON.parse(pzlrrcContent);
+		const {config: {dependencies}} = require('@pzlr/build-core');
 
 		return dependencies;
 	}
