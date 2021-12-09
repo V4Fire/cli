@@ -11,11 +11,15 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
-## v1.1.2 (2021-12-03)
+## v1.2.0 (2021-12-09)
+
+#### :rocket: New Feature
+
+- Added a new command to initialize the `npm` workspace
 
 #### :house: Internal
 
-- migrate to npm8
+- Migration to `npm@8`
 
 ## v1.1.1 (2021-07-09)
 

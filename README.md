@@ -18,6 +18,19 @@ v4fire make app my-app && cd my-app && npm run build
 
 It will create application ready for work.
 
+### Create a workspace
+
+```bash
+v4fire create-workspace
+```
+
+It will clone all necessary dependencies from `.pzlrrc` and initialize the `npm` workspace.
+Also, you can specify custom dependencies to install to the workspace or change a workspace directory.
+
+```bash
+v4fire create-workspace --package my-package --root my-workspace
+```
+
 ### Make block/page
 
 ```bash
