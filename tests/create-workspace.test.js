@@ -10,7 +10,8 @@
 
 const {expect} = require('chai');
 
-const CreateWorkspaceController = require('../src/controllers/create-workspace'),
+const
+	CreateWorkspaceController = require('../src/controllers/create-workspace'),
 	packageJSON = require('./cases/package.json');
 
 let controller;

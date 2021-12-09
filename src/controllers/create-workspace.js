@@ -8,10 +8,12 @@
  * https://github.com/V4Fire/cli/blob/master/LICENSE
  */
 
-const util = require('util'),
+const
+	util = require('util'),
 	exec = util.promisify(require('child_process').exec);
 
-const {Controller} = require('../core/controller');
+const
+	{Controller} = require('../core/controller');
 
 /**
  * @typedef {Object} PackageInfo
@@ -29,11 +31,13 @@ class CreateWorkspaceController extends Controller {
 	async run() {
 		await this.createWorkspaceRoot();
 
-		const dependencies = this.getDependencies();
+		const
+			dependencies = this.getDependencies();
 
 		await Promise.all(
 			dependencies.map(async (dependency) => {
-				const {name} = this.getDependencyPackageInfo(dependency),
+				const
+					{name} = this.getDependencyPackageInfo(dependency),
 					{gitURL, version} = this.getDependencyInfo(dependency);
 
 				await this.cloneGitRepo(gitURL, version, name);
@@ -70,6 +74,7 @@ class CreateWorkspaceController extends Controller {
 
 		try {
 			await exec(command);
+
 		} catch {
 			throw new Error(
 				`An error occurred when cloning ${packageName} with command:\n${command}`
@@ -116,9 +121,7 @@ class CreateWorkspaceController extends Controller {
 
 		await exec(`npm init -w ${this.workspaceRoot}/${packageName} --yes`);
 
-		this.log.msg(
-			`The workspace is successfully initialized for ${packageName}`
-		);
+		this.log.msg(`The workspace is successfully initialized for ${packageName}`);
 	}
 
 	/**
@@ -130,10 +133,12 @@ class CreateWorkspaceController extends Controller {
 	 * @returns {PackageInfo}
 	 */
 	getDependencyInfo(packageName) {
-		let {version, gitURL} = this.getInfoFromRootPackageJSON(packageName);
+		let
+			{version, gitURL} = this.getInfoFromRootPackageJSON(packageName);
 
 		if (!gitURL || !version) {
-			const packageInfo = this.getInfoFromPackage(packageName);
+			const
+				packageInfo = this.getInfoFromPackage(packageName);
 
 			if (!gitURL) {
 				gitURL = packageInfo.gitURL;
@@ -169,6 +174,7 @@ class CreateWorkspaceController extends Controller {
 
 		try {
 			rootPackageJSON = require(this.vfs.resolve('package.json'));
+
 		} catch {
 			throw new Error(
 				`An error occurred when reading package.json of ${packageName}`
@@ -183,6 +189,7 @@ class CreateWorkspaceController extends Controller {
 		if (this.hasURLProtocol(dependencyVersion)) {
 			gitURL = this.createSSHGitURL(dependencyVersion);
 			version = /(?<=#).*$/.exec(gitVersionURL)[0];
+
 		} else {
 			version = /^\d+\.\d+\.\d+(?:-[\w-]+)?$/.exec(dependencyVersion)[0];
 		}
@@ -205,7 +212,8 @@ class CreateWorkspaceController extends Controller {
 			return gitURL;
 		}
 
-		const validURL = `https://${gitURL.replace(/#.*$/, '')}`,
+		const
+			validURL = `https://${gitURL.replace(/#.*$/, '')}`,
 			url = new URL(validURL);
 
 		return `git@${url.host.replace('gitlab', 'git')}:${url.pathname.slice(1)}`;
@@ -236,11 +244,7 @@ class CreateWorkspaceController extends Controller {
 	 * @returns {(string|undefined)}
 	 */
 	getDependencyPackageInfo(packageName) {
-		return require(this.vfs.resolve(
-			'node_modules',
-			packageName,
-			'package.json'
-		));
+		return require(this.vfs.resolve('node_modules', packageName, 'package.json'));
 	}
 
 	/**
