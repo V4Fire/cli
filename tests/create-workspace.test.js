@@ -21,16 +21,6 @@ describe('`create-workspace` controller methods', () => {
 		controller = new CreateWorkspaceController({});
 	});
 
-	describe('`formatGitVersion`', () => {
-		it('should return a version with a prefix `v`', () => {
-			expect(controller.formatGitVersion('3.4.5')).to.equal('v3.4.5');
-		});
-
-		it('should return a version without changes', () => {
-			expect(controller.formatGitVersion('npm8')).to.equal('npm8');
-		});
-	});
-
 	describe('`getDependencyVersion`', () => {
 		it('should return a version of the package', () => {
 			expect(
