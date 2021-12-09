@@ -32,6 +32,7 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
+    "@pzlr/build-core": "^2.12.5",
     "@v4fire/linters": "^1.5.9",
     "chai": "^4.2.0",
     "husky": "^4.2.5",
@@ -50,10 +51,10 @@
     }
   },
   "lint-staged": {
-    "*.{js|json}": [
+    "*.{json}": [
       "prettier --write",
       "git add"
     ],
-    "*.{js,css,md}": "prettier --write"
+    "*.{css,md}": "prettier --write"
   }
 }

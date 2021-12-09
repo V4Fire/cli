@@ -17,6 +17,7 @@ describe('Change extend option', () => {
 			expect(app.vfs.readFile('./src/base/b-test/b-test.ts')).contains(
 				'i-data/i-data'
 			);
+
 			expect(app.vfs.readFile('./src/base/b-test/b-test.ts')).contains(
 				'extends iData'
 			);
@@ -37,6 +38,7 @@ describe('Change extend option', () => {
 			expect(app.vfs.readFile('./src/pages/p-test/p-test.ts')).contains(
 				'i-dynamic-page/i-dynamic-page'
 			);
+
 			expect(app.vfs.readFile('./src/pages/p-test/p-test.ts')).contains(
 				'extends iDynamicPage'
 			);

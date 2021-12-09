@@ -1,5 +1,15 @@
 #!/usr/bin/env node
 
+'use strict';
+
+/*!
+ * V4Fire cli
+ * https://github.com/V4Fire/cli
+ *
+ * Released under the MIT license
+ * https://github.com/V4Fire/cli/blob/master/LICENSE
+ */
+
 const yargs = require('yargs');
 const {Application} = require('../src/application');
 
@@ -18,9 +28,26 @@ const options = yargs
 				});
 		}
 	)
+
 	.command(
 		'resolve-changelog',
 		'Resolve conflicts in changelog files and sort records by date'
+	)
+
+	.command(
+		'create-workspace',
+		'Creates a workspace for the project dependencies declared within `.pzlrrc`',
+		(yargs) => {
+			yargs
+				.positional('root', {
+					default: 'workspace',
+					type: 'string'
+				})
+
+				.positional('package', {
+					type: 'string'
+				});
+		}
 	)
 
 	.command(
