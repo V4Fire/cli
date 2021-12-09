@@ -15,17 +15,21 @@ const
 
 /**
  * @typedef {Object} PackageInfo
- * @property {(string|undefined)} gitURL - git url of the package
+ * @property {(string|undefined)} gitURL - git URL of the package
  * @property {(string|undefined)} version - version of the package
  */
 
 class CreateWorkspaceController extends Controller {
 	/**
-	 * Name of a folder where the workspace will be created
+	 * Name of a folder where a workspace will be created
 	 * @type {string}
 	 */
 	workspaceRoot = this.config.root;
 
+	/**
+	 * Downloads the necessary dependencies and initializes a workspace
+	 * @returns {Promise<void>}
+	 */
 	async run() {
 		await this.createWorkspaceRoot();
 
@@ -92,32 +96,36 @@ class CreateWorkspaceController extends Controller {
 	}
 
 	/**
-	 * Getting properly branch name from git based on version from package.json
+	 * Returns a git branch name to clone based on the specified version and name from `package.json`
 	 *
-	 * @param {string} gitURL
-	 * @param {string} version
-	 * @param {string} packageName
-	 * @returns {string}
+	 * @param {string} gitURL - URL to the git repository to clone
+	 * @param {string} version - version of the package from `package.json`
+	 * @param {string} packageName - name of the package from `package.json`
+	 * @returns {Promise<string>}
 	 */
 	async getBranchFromGit(gitURL, version, packageName) {
-		this.log.msg(`Getting right version of git branch/tag for ${packageName}...`);
+		this.log.msg(`Getting the right version of a git branch/tag for ${packageName}...`);
 
-		let gitBranch;
+		let
+			gitBranch;
 
 		try {
-			const {stdout} = await exec(`git ls-remote ${gitURL}`);
+			const
+				{stdout} = await exec(`git ls-remote ${gitURL}`);
 
-			const branches = stdout.split('\n');
-			const versionRegExp = new RegExp(version, 'gm');
-			const fullBranchName = branches.find((branch) => versionRegExp.exec(branch));
-			const branch = fullBranchName.split('\t')[1];
-			gitBranch = /refs\/(heads|tags)\/(.*)/.exec(branch)[2];
+			const
+				branches = stdout.split('\n'),
+				versionRegExp = new RegExp(version, 'gm'),
+				fullBranchName = branches.find((branch) => versionRegExp.exec(branch)),
+				branch = fullBranchName.split('\t')[1];
 
-		} catch(err) {
-			throw new Error(`Error when getting git branch for ${packageName}`);
+			gitBranch = /refs\/(?:heads|tags)\/(.*)/.exec(branch)[1];
+
+		} catch {
+			throw new Error(`An error occurred when getting a git branch for ${packageName}`);
 		}
 
-		this.log.msg(`Successfully getting branch for ${packageName}: ${gitBranch}`);
+		this.log.msg(`A branch for ${packageName} is ${gitBranch}`);
 		return gitBranch;
 	}
 
