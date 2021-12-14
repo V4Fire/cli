@@ -13,6 +13,8 @@ const
 const
 	{Controller} = require('../core/controller');
 
+require('@v4fire/core');
+
 /**
  * @typedef {Object} PackageInfo
  * @property {(string|undefined)} gitURL - git URL of the package
@@ -115,7 +117,7 @@ class CreateWorkspaceController extends Controller {
 
 			const
 				branches = stdout.split('\n'),
-				versionRegExp = new RegExp(version, 'gm'),
+				versionRegExp = new RegExp(RegExp.escape(version), 'gm'),
 				fullBranchName = branches.find((branch) => versionRegExp.exec(branch)),
 				branch = fullBranchName.split('\t')[1];
 

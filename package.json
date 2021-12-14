@@ -22,6 +22,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@v4fire/core": "^3.72.0",
     "chalk": "^4.1.0",
     "fs-extra": "^9.0.1",
     "git-config-path": "^2.0.0",
