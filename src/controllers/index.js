@@ -4,6 +4,7 @@ const MakeTestController = require('./make-test');
 const MakeAppController = require('./make-app');
 const ResolveChangelogController = require('./resolve-changelog');
 const CreateWorkspaceController = require('./create-workspace');
+const RemoveWorkspaceController = require('./remove-workspace');
 
 module.exports = {
 	MakeAppController,
@@ -11,5 +12,6 @@ module.exports = {
 	RenameController,
 	MakeTestController,
 	ResolveChangelogController,
-	CreateWorkspaceController
+	CreateWorkspaceController,
+	RemoveWorkspaceController
 };

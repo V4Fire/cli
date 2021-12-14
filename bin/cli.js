@@ -51,6 +51,18 @@ const options = yargs
 	)
 
 	.command(
+		'remove-workspace',
+		'Remove a workspace from the project',
+		(yargs) => {
+			yargs
+				.positional('root', {
+					default: 'workspace',
+					type: 'string'
+				})
+		}
+	)
+
+	.command(
 		'make <subject> <name> [path]',
 		'Make block, page or app',
 		(yargs) => {
