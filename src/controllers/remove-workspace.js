@@ -15,12 +15,6 @@ const
 
 require('@v4fire/core');
 
-/**
- * @typedef {Object} PackageInfo
- * @property {(string|undefined)} gitURL - git URL of the package
- * @property {(string|undefined)} version - version of the package
- */
-
 class RemoveWorkspaceController extends Controller {
 	/**
 	 * Name of a folder where a workspace were initiated

@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@v4fire/core": "^3.72.0",
+    "@pzlr/build-core": "^2.12.5",
     "chalk": "^4.1.0",
     "fs-extra": "^9.0.1",
     "git-config-path": "^2.0.0",
@@ -33,7 +34,6 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
-    "@pzlr/build-core": "^2.12.5",
     "@v4fire/linters": "^1.5.9",
     "chai": "^4.2.0",
     "husky": "^4.2.5",
