@@ -30,6 +30,7 @@ class RemoveWorkspaceController extends Controller {
 		this.removeWorkspaceRoot();
 		this.clearPackageJSON();
 		await this.clearPackageLock();
+		await this.clearComponentsLock();
 		await this.installDependencies();
 	}
 
@@ -65,7 +66,7 @@ class RemoveWorkspaceController extends Controller {
 
 		delete parsedPackageJSON.workspaces;
 
-		this.vfs.writeFile(packageJSONPath, concatEmptyLine(JSON.stringify(parsedPackageJSON, null, 2)));
+		this.vfs.writeFile(packageJSONPath, this.concatNewLine(JSON.stringify(parsedPackageJSON, null, 2)));
 
 		this.log.msg('Cleared package.json!');
 	}
@@ -76,7 +77,7 @@ class RemoveWorkspaceController extends Controller {
 	 *
 	 * @returns {string}
 	 */
-	concatEmptyLine(str) {
+	 concatNewLine(str) {
 		return `${str}\n`;
 	}
 
@@ -88,9 +89,22 @@ class RemoveWorkspaceController extends Controller {
 	 async clearPackageLock() {
 		this.log.msg('Clear package-lock.json from workspace...');
 
-		await exec('git reset HEAD package-lock.json');
+		await exec('git checkout HEAD package-lock.json');
 
 		this.log.msg('Cleared package-lock.json!');
+	}
+
+	/**
+	 * Remove workspace field from package.json of project
+	 *
+	 * @returns {!Promise<void>}
+	 */
+	 async clearComponentsLock() {
+		this.log.msg('Clear components-lock.json...');
+
+		await exec('git checkout HEAD components-lock.json');
+
+		this.log.msg('Cleared components-lock.json!');
 	}
 
 	/**
