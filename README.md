@@ -31,6 +31,14 @@ Also, you can specify custom dependencies to install to the workspace or change 
 v4fire create-workspace --package my-package --root my-workspace
 ```
 
+### Remove a workspace
+
+```bash
+v4fire remove-workspace
+```
+
+It will remove workspace folder, clear package-lock.json and components-lock.json, reinstall dependencies
+
 ### Make block/page
 
 ```bash
