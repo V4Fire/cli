@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-'use strict';
-
 /*!
  * V4Fire cli
  * https://github.com/V4Fire/cli
@@ -45,6 +43,18 @@ const options = yargs
 				})
 
 				.positional('package', {
+					type: 'string'
+				});
+		}
+	)
+
+	.command(
+		'remove-workspace',
+		'Remove a workspace from the project',
+		(yargs) => {
+			yargs
+				.positional('root', {
+					default: 'workspace',
 					type: 'string'
 				});
 		}
@@ -129,7 +139,6 @@ const options = yargs
 		'v4fire rename b-loader b-loader-mini',
 		'Rename b-loader to b-loader-mini'
 	)
-	.example('v4fire make app', 'Make v4fire boilerplate')
 	.example('v4fire make block b-point', 'Make i-block b-point')
 	.example('v4fire make block point', 'Make i-block b-point')
 	.example('v4fire make page card', 'Make i-dynamic-page p-card')

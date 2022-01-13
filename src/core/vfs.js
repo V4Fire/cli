@@ -107,6 +107,16 @@ class VirtualFileSystem {
 	}
 
 	/**
+	 * Remove directory
+	 *
+	 * @param {string} filepath
+	 */
+	rmDir(dirPath) {
+		// eslint-disable-next-line no-empty-function
+		return fs.rm(dirPath, {recursive: true}, () => {});
+	}
+
+	/**
 	 * Make directory if it does not exist
 	 *
 	 * @param {string} filepath

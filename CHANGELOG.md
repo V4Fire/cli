@@ -11,6 +11,24 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.3.0 (2022-01-14)
+
+#### :rocket: New Feature
+
+* Added a new command to remove the `npm` workspace
+
+### :bug: Bug Fix
+
+* Added regExp escaping in initializing workspace
+
+#### :house: Internal
+
+* Removed `npm` from dependencies
+
+###### :boom: Breaking Change
+
+* Removed make app script
+
 ## v1.2.0 (2021-12-09)
 
 #### :rocket: New Feature

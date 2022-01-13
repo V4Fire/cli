@@ -13,6 +13,8 @@ const
 const
 	{Controller} = require('../core/controller');
 
+require('@v4fire/core');
+
 /**
  * @typedef {Object} PackageInfo
  * @property {(string|undefined)} gitURL - git URL of the package
@@ -31,7 +33,8 @@ class CreateWorkspaceController extends Controller {
 	 * @returns {Promise<void>}
 	 */
 	async run() {
-		await this.createWorkspaceRoot();
+		this.removeWorkspaceRoot();
+		this.createWorkspaceRoot();
 
 		const
 			dependencies = this.getDependencies();
@@ -40,10 +43,10 @@ class CreateWorkspaceController extends Controller {
 			dependencies.map(async (dependency) => {
 				const
 					{name} = this.getDependencyPackageInfo(dependency),
-					{gitURL, version} = this.getDependencyInfo(dependency);
+					{gitURL, version, gitSSHURL} = this.getDependencyInfo(dependency);
 
-				const gitBranch = await this.getBranchFromGit(gitURL, version, name);
-				await this.cloneGitRepo(gitURL, gitBranch, name);
+				const gitBranch = await this.getBranchFromGit(gitURL, gitSSHURL, version, name);
+				await this.cloneGitRepo(gitURL, gitSSHURL, gitBranch, name);
 				await this.initWorkspace(name);
 			})
 		);
@@ -57,7 +60,7 @@ class CreateWorkspaceController extends Controller {
 	 */
 	async installDependencies() {
 		this.log.msg('Installing dependencies...');
-		await exec('npm install');
+		await exec('npm install --force');
 	}
 
 	/**
@@ -68,18 +71,26 @@ class CreateWorkspaceController extends Controller {
 	 * @param {string} packageName - name of the cloned package
 	 * @returns {!Promise<void>}
 	 */
-	async cloneGitRepo(gitURL, branch, packageName) {
+	async cloneGitRepo(gitURL, gitSSHURL, branch, packageName) {
 		this.log.msg(`Cloning ${packageName}...`);
 
-		const command = `git clone ${gitURL} --single-branch --branch ${branch} ${this.workspaceRoot}/${packageName}`;
+		const getCloneCommand = (url) => `git clone ${url} --single-branch --branch ${branch} ${this.workspaceRoot}/${packageName}`;
 
 		try {
-			await exec(command);
+			await exec(getCloneCommand(gitSSHURL));
 
 		} catch {
-			throw new Error(
-				`An error occurred when cloning ${packageName} with command:\n${command}`
-			);
+			this.log.msg(`Failed to clone repo ${packageName} from git by ssh, trying https...`);
+
+			try {
+				await exec(getCloneCommand(gitURL));
+
+			} catch(err) {
+				console.log(err);
+				throw new Error(
+					`An error occurred when cloning ${packageName} with command:\n${getCloneCommand(gitSSHURL)}`
+				);
+			}
 		}
 
 		this.log.msg(`${packageName} is successfully cloned`);
@@ -103,27 +114,35 @@ class CreateWorkspaceController extends Controller {
 	 * @param {string} packageName - name of the package from `package.json`
 	 * @returns {Promise<string>}
 	 */
-	async getBranchFromGit(gitURL, version, packageName) {
+	async getBranchFromGit(gitURL, gitSSHURL, version, packageName) {
 		this.log.msg(`Getting the right version of a git branch/tag for ${packageName}...`);
 
 		let
-			gitBranch;
+			stdout;
+		const getBranchesCommand = (url) => `git ls-remote ${url}`;
 
 		try {
-			const
-				{stdout} = await exec(`git ls-remote ${gitURL}`);
-
-			const
-				branches = stdout.split('\n'),
-				versionRegExp = new RegExp(version, 'gm'),
-				fullBranchName = branches.find((branch) => versionRegExp.exec(branch)),
-				branch = fullBranchName.split('\t')[1];
-
-			gitBranch = /refs\/(?:heads|tags)\/(.*)/.exec(branch)[1];
+			const result = await exec(getBranchesCommand(gitSSHURL));
+			stdout = result.stdout;
 
 		} catch {
-			throw new Error(`An error occurred when getting a git branch for ${packageName}`);
+			this.log.msg(`Failed to fetch info about ${packageName} from git by ssh, trying https...`);
+
+			try {
+				const result = await exec(getBranchesCommand(gitURL));
+				stdout = result.stdout;
+
+			} catch {
+				throw new Error(`An error occurred when getting a git branch for ${packageName} with command:\n${getBranchesCommand(gitURL)}`);
+			}
 		}
+
+		const
+			branches = stdout.split('\n'),
+			versionRegExp = new RegExp(RegExp.escape(version), 'gm'),
+			fullBranchName = branches.find((branch) => versionRegExp.exec(branch)),
+			branch = fullBranchName.split('\t')[1],
+			gitBranch = /refs\/(?:heads|tags)\/(.*)/.exec(branch)[1];
 
 		this.log.msg(`A branch for ${packageName} is ${gitBranch}`);
 		return gitBranch;
@@ -153,7 +172,7 @@ class CreateWorkspaceController extends Controller {
 	 */
 	getDependencyInfo(packageName) {
 		let
-			{version, gitURL} = this.getInfoFromRootPackageJSON(packageName);
+			{version, gitSSHURL, gitURL} = this.getInfoFromRootPackageJSON(packageName);
 
 		if (!gitURL || !version) {
 			const
@@ -161,6 +180,7 @@ class CreateWorkspaceController extends Controller {
 
 			if (!gitURL) {
 				gitURL = packageInfo.gitURL;
+				gitSSHURL = packageInfo.gitSSHURL;
 			}
 
 			if (!version) {
@@ -168,7 +188,7 @@ class CreateWorkspaceController extends Controller {
 			}
 		}
 
-		return {version, gitURL};
+		return {version, gitSSHURL, gitURL};
 	}
 
 	/**
@@ -179,7 +199,9 @@ class CreateWorkspaceController extends Controller {
 	 */
 	getInfoFromPackage(packageName) {
 		const info = this.getDependencyPackageInfo(packageName);
-		return {version: info.version, gitURL: this.getGitURLFromPackageJSON(info)};
+		const gitURL = this.getGitURLFromPackageJSON(info);
+
+		return {version: info.version, gitURL: this.createValidGitURL(gitURL), gitSSHURL: this.createSSHGitURL(gitURL)};
 	}
 
 	/**
@@ -189,7 +211,7 @@ class CreateWorkspaceController extends Controller {
 	 * @returns {PackageInfo}
 	 */
 	getInfoFromRootPackageJSON(packageName) {
-		let version, gitURL, rootPackageJSON;
+		let version, gitURL, gitSSHURL, rootPackageJSON;
 
 		try {
 			rootPackageJSON = require(this.vfs.resolve('package.json'));
@@ -206,14 +228,15 @@ class CreateWorkspaceController extends Controller {
 		);
 
 		if (this.hasURLProtocol(dependencyVersion)) {
-			gitURL = this.createSSHGitURL(dependencyVersion);
+			gitSSHURL = this.createSSHGitURL(dependencyVersion);
+			gitURL = this.createValidGitURL(dependencyVersion);
 			version = /(?<=#).*$/.exec(dependencyVersion)[0];
 
 		} else {
 			version = /\d+\.\d+\.\d+(?:-[\w-]+)?$/.exec(dependencyVersion)[0];
 		}
 
-		return {version, gitURL};
+		return {version, gitURL, gitSSHURL};
 	}
 
 	/**
@@ -236,6 +259,14 @@ class CreateWorkspaceController extends Controller {
 			url = new URL(validURL);
 
 		return `git@${url.host.replace('gitlab', 'git')}:${url.pathname.slice(1)}`;
+	}
+
+	createValidGitURL(gitURL) {
+		if (this.hasURLProtocol(gitURL)) {
+			gitURL = /(?<=:\/\/).*/.exec(gitURL)[0];
+		}
+
+		return `https://${gitURL.replace(/#.*$/, '')}`;
 	}
 
 	/**
@@ -294,8 +325,6 @@ class CreateWorkspaceController extends Controller {
 			if (typeof gitURL === 'object') {
 				gitURL = gitURL.url;
 			}
-
-			gitURL = this.createSSHGitURL(gitURL);
 		}
 
 		return gitURL;
@@ -307,6 +336,14 @@ class CreateWorkspaceController extends Controller {
 	 */
 	async createWorkspaceRoot() {
 		await this.vfs.ensureDir(this.workspaceRoot);
+	}
+
+	/**
+	 * Remove a workspace folder
+	 * @returns {void}
+	 */
+	 removeWorkspaceRoot() {
+		this.vfs.rmDir(this.workspaceRoot);
 	}
 }
 
