@@ -11,6 +11,12 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.3.1 (2022-03-05)
+
+#### :house: Internal
+
+* Freezing versions of all dependencies from package.json
+
 ## v1.3.0 (2022-01-14)
 
 #### :rocket: New Feature
@@ -66,3 +72,4 @@ _Note: Gaps between patch versions are faulty, broken or test releases._
 #### :rocket: New Feature
 
 * Added `CHANGELOG` file and `assest/img` example
+
