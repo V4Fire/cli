@@ -11,7 +11,7 @@ const
 	exec = util.promisify(require('child_process').exec);
 
 const
-	{Controller} = require('../core/controller');
+	{WorkspaceController} = require('../core/workspaceController');
 
 require('@v4fire/core');
 
@@ -21,12 +21,11 @@ require('@v4fire/core');
  * @property {(string|undefined)} version - version of the package
  */
 
-class CreateWorkspaceController extends Controller {
+class CreateWorkspaceController extends WorkspaceController {
 	/**
-	 * Name of a folder where a workspace will be created
-	 * @type {string}
+	 * Array of successfully bootstrapped workspace packages
 	 */
-	workspaceRoot = this.config.root;
+	workspacePackages = [];
 
 	/**
 	 * Downloads the necessary dependencies and initializes a workspace
@@ -47,20 +46,12 @@ class CreateWorkspaceController extends Controller {
 
 				const gitBranch = await this.getBranchFromGit(gitURL, gitSSHURL, version, name);
 				await this.cloneGitRepo(gitURL, gitSSHURL, gitBranch, name);
-				await this.initWorkspace(name);
+				this.workspacePackages.push(name);
 			})
 		);
 
+		await this.initWorkspaces();
 		await this.installDependencies();
-	}
-
-	/**
-	 * Installs all dependencies of the project
-	 * @returns {!Promise<void>}
-	 */
-	async installDependencies() {
-		this.log.msg('Installing dependencies...');
-		await exec('npm install --force');
 	}
 
 	/**
@@ -154,12 +145,20 @@ class CreateWorkspaceController extends Controller {
 	 * @param {string} packageName
 	 * @returns {!Promise<void>}
 	 */
-	async initWorkspace(packageName) {
-		this.log.msg(`Initialize a workspace for ${packageName}...`);
+	initWorkspaces() {
+		this.log.msg('Initialize a workspaces...');
 
-		await exec(`npm init -w ${this.workspaceRoot}/${packageName} --yes`);
+		const rootPackageJSON = this.getRootPackageJSON();
+		rootPackageJSON.workspaces = [];
 
-		this.log.msg(`The workspace is successfully initialized for ${packageName}`);
+		this.workspacePackages.forEach((packageName) => {
+			rootPackageJSON.workspaces.push(`${this.workspaceRoot}/${packageName}`);
+			rootPackageJSON.dependencies[packageName] = 'workspace:*';
+		});
+
+		this.writeRootPackageJSON(rootPackageJSON);
+
+		this.log.msg('The workspaces is successfully initialized');
 	}
 
 	/**
@@ -201,7 +200,11 @@ class CreateWorkspaceController extends Controller {
 		const info = this.getDependencyPackageInfo(packageName);
 		const gitURL = this.getGitURLFromPackageJSON(info);
 
-		return {version: info.version, gitURL: this.createValidGitURL(gitURL), gitSSHURL: this.createSSHGitURL(gitURL)};
+		return {
+			version: info.version,
+			gitURL: this.createValidGitURL(gitURL),
+			gitSSHURL: this.createSSHGitURL(gitURL)
+		};
 	}
 
 	/**
@@ -211,16 +214,8 @@ class CreateWorkspaceController extends Controller {
 	 * @returns {PackageInfo}
 	 */
 	getInfoFromRootPackageJSON(packageName) {
-		let version, gitURL, gitSSHURL, rootPackageJSON;
-
-		try {
-			rootPackageJSON = require(this.vfs.resolve('package.json'));
-
-		} catch {
-			throw new Error(
-				`An error occurred when reading package.json of ${packageName}`
-			);
-		}
+		let version, gitURL, gitSSHURL;
+		const rootPackageJSON = this.getRootPackageJSON();
 
 		const dependencyVersion = this.getDependencyVersion(
 			rootPackageJSON,
@@ -336,14 +331,6 @@ class CreateWorkspaceController extends Controller {
 	 */
 	async createWorkspaceRoot() {
 		await this.vfs.ensureDir(this.workspaceRoot);
-	}
-
-	/**
-	 * Remove a workspace folder
-	 * @returns {void}
-	 */
-	 removeWorkspaceRoot() {
-		this.vfs.rmDir(this.workspaceRoot);
 	}
 }
 
