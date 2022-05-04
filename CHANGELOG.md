@@ -11,6 +11,12 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.4.0 (2022-03-30)
+
+#### :house: Internal
+
+* Rewritten work with workspaces on `yarn`
+
 ## v1.3.1 (2022-03-05)
 
 #### :house: Internal
