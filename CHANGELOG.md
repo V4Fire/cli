@@ -11,6 +11,12 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.?.? (2022-??-??)
+
+#### :rocket: New Feature
+
+* Added script for update git dependencies
+
 ## v1.4.0 (2022-03-30)
 
 #### :house: Internal
