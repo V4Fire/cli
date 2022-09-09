@@ -61,6 +61,11 @@ const options = yargs
 	)
 
 	.command(
+		'up-git',
+		'up git dependencies in project'
+	)
+
+	.command(
 		'make <subject> <name> [path]',
 		'Make block, page or app',
 		(yargs) => {
