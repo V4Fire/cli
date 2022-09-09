@@ -47,7 +47,7 @@ describe('`create-workspace` controller methods', () => {
 				controller.getGitURLFromPackageJSON({
 					repository: 'https://gitlab.edadeal.yandex-team.ru/frontend/core.git'
 				})
-			).to.equal('git@git.edadeal.yandex-team.ru:frontend/core.git');
+			).to.equal('https://gitlab.edadeal.yandex-team.ru/frontend/core.git');
 		});
 
 		it('should return nothing if a repository field is not exist', () => {
