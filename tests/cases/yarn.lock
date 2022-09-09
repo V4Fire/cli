@@ -1,0 +1,13 @@
+"@edadeal/design-system@git+https://gitlab.edadeal.yandex-team.ru/frontend/design-system.git#EDADEALCORECASE-1207":
+  version: 0.1.0
+  resolution: "@edadeal/design-system@https://gitlab.edadeal.yandex-team.ru/frontend/design-system.git#commit=27e4ac2cdc3827e987cfa765362bf23113d024bb"
+  checksum: e42753408a22a1f1dac2b3d1ecb48da0684190749fefdf6e13f38b06de9845d30c52be030a5908579aea68a69a8ebf35afb0ba3c40259991d3dbffc875ea3b13
+  languageName: node
+  linkType: hard
+
+"@gar/promisify@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "@gar/promisify@npm:1.1.3::__archiveUrl=https%3A%2F%2Fnpm.yandex-team.ru%2F%40gar%252fpromisify%2F-%2Fpromisify-1.1.3.tgz%3Frbtorrent%3D256dd71119a0b31cff5d0313253ae4c4b435d693"
+  checksum: 4059f790e2d07bf3c3ff3e0fec0daa8144fe35c1f6e0111c9921bd32106adaa97a4ab096ad7dab1e28ee6a9060083c4d1a4ada42a7f5f3f7a96b8812e2b757c1
+  languageName: node
+  linkType: hard

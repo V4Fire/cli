@@ -125,7 +125,7 @@ require('@v4fire/core');
 			lines.splice(startIndex, endIndex - startIndex);
 		});
 
-		this.writeLockFile(lines.join('\n'));
+		return this.writeLockFile(lines.join('\n'));
 	}
 
 	/**
