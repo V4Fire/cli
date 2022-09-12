@@ -1,4 +1,3 @@
-'use strict';
 
 /*!
  * V4Fire cli
@@ -12,52 +11,43 @@ const {expect} = require('chai');
 
 const
 	{VirtualFileSystem} = require('../src/core/vfs'),
-	CreateUpGitDependenciesController = require('../src/controllers/up-git-dependencies'),
-	packageJSON = require('./cases/package.json');
+	CreateUpYarnGitDependenciesController = require('../src/controllers/up-yarn-git-dependencies');
 
 let controller;
 
 describe('`up-git-dependencies` controller methods', () => {
 	beforeEach(() => {
-		controller = new CreateUpGitDependenciesController({}, new VirtualFileSystem());
+		controller = new CreateUpYarnGitDependenciesController({}, new VirtualFileSystem());
 	});
 
 	it('should extract all dependencies from package.json', () => {
 		console.log(controller.vfs.resolve('tests/cases/package.json'));
 		controller.packageJSONPath = controller.vfs.resolve('tests/cases/package.json');
 
-		expect(controller.getDependencies()).to.deep.equal(
+		expect(controller.projectDependencies).to.deep.equal(
 			{
-				"@edadeal/core": "git+https://gitlab.edadeal.yandex-team.ru/frontend/core.git#npm8",
-				"@edadeal/design-system": "git+https://gitlab.edadeal.yandex-team.ru/frontend/design-system.git#v.86",
-				"@v4fire/client": "git+https://github.com/V4Fire/Client.git#webpack-cli/v2",
-				"@v4fire/core": "^3.65.1"
+				'@edadeal/core': 'git+https://gitlab.edadeal.yandex-team.ru/frontend/core.git#npm8',
+				'@edadeal/design-system': 'git+https://gitlab.edadeal.yandex-team.ru/frontend/design-system.git#v.86',
+				'@v4fire/client': 'git+https://github.com/V4Fire/Client.git#webpack-cli/v2',
+				'@v4fire/core': '^3.65.1'
 			}
 		);
 	});
 
-	it('should return git dependencies from package.json', () => {
-		expect(
-			controller.gitDependencies
-		).to.deep.equal(
-			[]
-		);
+	it('should return all Git dependencies from the project `package.json`', () => {
+		expect(controller.gitDependencies).to.deep.equal([]);
 
 		controller.dependencies = ['@edadeal/core', '@edadeal/design-system', '@v4fire/client', '@v4fire/core'];
 		controller.packageJSONPath = controller.vfs.resolve('tests/cases/package.json');
-		controller.calculateGitDependencies();
+		controller.extractGitDependencies();
 
-		expect(
-			controller.gitDependencies
-		).to.deep.deep.equal(
-			['@edadeal/core', '@edadeal/design-system', '@v4fire/client']
-		);
+		expect(controller.gitDependencies).to.deep.deep.equal(['@edadeal/core', '@edadeal/design-system', '@v4fire/client']);
 	});
 
-	it('should return content of lockfile', () => {
+	it('should return the contents of the dependency lock file', () => {
 		controller.lockFilePath = controller.vfs.resolve('tests/cases/yarn.lock');
 
-		expect(controller.getLockFile()).to.equal(
+		expect(controller.lockFile).to.equal(
 `"@edadeal/design-system@git+https://gitlab.edadeal.yandex-team.ru/frontend/design-system.git#EDADEALCORECASE-1207":
   version: 0.1.0
   resolution: "@edadeal/design-system@https://gitlab.edadeal.yandex-team.ru/frontend/design-system.git#commit=27e4ac2cdc3827e987cfa765362bf23113d024bb"
@@ -74,12 +64,12 @@ describe('`up-git-dependencies` controller methods', () => {
 		);
 	});
 
-	it('should remove from lockfile only git dependencies', () => {
+	it('should remove only Git dependencies from the lock file', () => {
 		controller.lockFilePath = controller.vfs.resolve('tests/cases/yarn.lock');
 		controller.gitDependencies = ['@edadeal/core', '@edadeal/design-system', '@v4fire/client'];
-		controller.writeLockFile = (content) => content;
+		controller.updateLockFile = (content) => content;
 
-		expect(controller.removeDependenciesFromLockFile()).to.equal(
+		expect(controller.removeGitDependenciesFromLockFile()).to.equal(
 `
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
