@@ -3,3 +3,6 @@
 node_modules
 /base
 /pages
+
+# System files
+.DS_Store

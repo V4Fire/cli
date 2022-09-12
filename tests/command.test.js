@@ -14,27 +14,6 @@ describe('Exec command', () => {
 
 			expect(app.vfs.exists('./src/base/b-test/b-test.ss')).is.true;
 		});
-
-		describe('App', () => {
-			it('should create full application', async () => {
-				const app = getApplication({
-					command: 'make',
-					subject: 'app',
-					name: 'test-app',
-					noInstall: true
-				});
-
-				await app.run();
-
-				expect(
-					app.vfs.exists('./test-app/src/base/b-hello-world/b-hello-world.ss')
-				).is.true;
-
-				expect(app.vfs.exists('./test-app/src/pages/p-root/p-root.ss')).is.true;
-				expect(app.vfs.exists('./test-app/package.json')).is.true;
-				expect(app.vfs.exists('./test-app/node_nodules')).is.false;
-			});
-		});
 	});
 
 	describe('Rename', () => {

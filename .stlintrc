@@ -1,13 +1,15 @@
 {
-	"extends": ["stlint-v4fire"],
-	"rules": {
-	  "useColorFromPreset": false,
-	  "allowColorOnlyInC": false,
-		"useMixinInsteadUnit": {
-			"conf": "never",
-			"mixin": "basis",
-			"unitType": "px",
-			"allowOneUnit": false
-		}
-	}
+  "extends": [
+    "stlint-v4fire"
+  ],
+  "rules": {
+    "useColorFromPreset": false,
+    "allowColorOnlyInC": false,
+    "useMixinInsteadUnit": {
+      "conf": "never",
+      "mixin": "basis",
+      "unitType": "px",
+      "allowOneUnit": false
+    }
+  }
 }

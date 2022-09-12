@@ -15,7 +15,7 @@ _Note: Gaps between patch versions are faulty, broken or test releases._
 
 #### :rocket: New Feature
 
-* Added script for update git dependencies
+* Added a new script to update Git dependencies via Yarn
 
 ## v1.4.0 (2022-03-30)
 
