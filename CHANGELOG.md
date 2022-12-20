@@ -11,6 +11,12 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.?.? (2022-??-??)
+
+#### :rocket: New Feature
+
+* Added more information to output about install process in up-git command
+
 ## v1.4.1 (2022-09-13)
 
 #### :rocket: New Feature
