@@ -8,7 +8,7 @@
 
 const
 	util = require('util'),
-	exec = util.promisify(require('child_process').exec);
+	spawn = util.promisify(require('child_process').spawn);
 
 const
 	{Controller} = require('../core/controller');
@@ -80,6 +80,7 @@ class UpYarnGitDependencies extends Controller {
 	async run() {
 		this.extractGitDependencies();
 		this.removeGitDependenciesFromLockFile();
+		this.log.info(`Dependencies for update: ${this.gitDependencies.join(', ')}`);
 
 		await this.installDependencies();
 	}
@@ -130,7 +131,7 @@ class UpYarnGitDependencies extends Controller {
 	 */
 	async installDependencies() {
 		this.log.msg('Installing dependencies...');
-		await exec('yarn');
+		await spawn('yarn', {stdio: 'inherit'});
 	}
 }
 
