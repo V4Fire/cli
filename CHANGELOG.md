@@ -11,6 +11,12 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.5.0 (2023-??-??)
+
+#### :rocket: New Feature
+
+* Added a new script to format the dependencies in appropriate state for install with private registry
+
 ## v1.4.2 (2022-12-20)
 
 #### :rocket: New Feature

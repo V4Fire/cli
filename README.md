@@ -18,6 +18,30 @@ v4fire make app my-app && cd my-app && npm run build
 
 It will create application ready for work.
 
+### Update git dependencies (only for yarn)
+
+It will forcefully update installed git dependencies by removing it from lockfile of project.
+
+```bash
+v4fire up-git
+```
+
+Also you can set dependency manually in argument
+
+```bash
+v4fire up-git --dep @v4fire/client
+```
+
+### Format installed npm dependencies for install in private registry
+
+If your project using private registry with a limited acces to npm packages (due to carantine for example) you can use this script.
+
+```bash
+V4_REGISTRY="https://someprivate.registry.com" v4fire deps
+```
+
+This script will try to fetch available versions of all installed packages and if no installed versions presented it will try to downgrade this dependency to the nearest avialable version in your private registry by setting `overrides` field in package.json.
+
 ### Create a workspace
 
 ```bash
