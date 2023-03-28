@@ -14,12 +14,12 @@ const
 	$C = require('collection.js');
 
 const
-	{Controller} = require('../core/controller');
+	{WorkspaceController} = require('../core/workspaceController');
 
 require('@v4fire/core');
 require('dotenv').config();
 
-class UpNpmDependencies extends Controller {
+class UpNpmDependencies extends WorkspaceController {
 	/**
 	 * Path to temporary save the list of the missing dependencies
 	 */
@@ -64,10 +64,10 @@ class UpNpmDependencies extends Controller {
 
 		await this.setRegistry(this.userRegistry);
 
-		const missingDependencies = await this.getMissingDependencies();
-		await this.saveMissingDependencies(missingDependencies);
+		const
+			missingDependencies = await this.getMissingDependencies(),
+			overrides = await this.formatOverrides(missingDependencies);
 
-		const overrides = await this.formatOverrides(missingDependencies);
 		await this.setOverrideToPackageJSON(overrides);
 
 		await this.setRegistry(this.mainRegistry);
@@ -115,7 +115,7 @@ class UpNpmDependencies extends Controller {
 		if (await this.isMissingDependenciesActual()) {
 			this.log.msg('Extract missing dependencies from cache...');
 
-			const cache = await this.getCachedDependencies();
+			const cache = this.getCachedDependencies();
 			return cache.missingDependencies;
 		}
 
@@ -137,13 +137,15 @@ class UpNpmDependencies extends Controller {
 				const versionsList = await this.getPackageVersions(name);
 
 				if (versionsList.length && !versionsList.includes(version)) {
-					this.log.msg(`Package ${name} of ${version} is not exists in `);
+					this.log.msg(`Package ${name} of ${version} is not exists in ${this.userRegistry}`);
 
 					missingDependencies.push(this.formatMissingDependency(dep, versionsList));
 				}
 			}
 
 		}, {parallel: os.cpus().length - 1});
+
+		await this.saveMissingDependencies(missingDependencies);
 
 		return missingDependencies;
 	}
@@ -171,7 +173,7 @@ class UpNpmDependencies extends Controller {
 	 * @returns {Promise<Object>}
 	 */
 	async getDependenciesOfProject() {
-		const {stdout} = await exec('npm query "*"', stdoutOptions);
+		const {stdout} = await exec('npm query "*"', this.stdoutOptions);
 
 		return JSON.parse(stdout);
 	}
@@ -181,11 +183,11 @@ class UpNpmDependencies extends Controller {
 	 * Get list of missed dependencies from cache
 	 * @returns {Promise<Object>}
 	 */
-	async getCachedDependencies() {
+	getCachedDependencies() {
 		let cachedDependencies;
 
 		try {
-			cachedDependencies = JSON.parse(await fs.readFile(this.missingDependenciesFilePath, 'utf-8'));
+			cachedDependencies = JSON.parse(this.vfs.readFile(this.missingDependenciesFilePath, 'utf-8'));
 
 		} catch {}
 
@@ -208,7 +210,7 @@ class UpNpmDependencies extends Controller {
 	async saveMissingDependencies(missingDependencies) {
 		const hashOfLockFile = await this.getLockFileHash();
 
-		await fs.writeFile(this.missingDependenciesFilePath, JSON.stringify({
+		this.vfs.writeFile(this.missingDependenciesFilePath, JSON.stringify({
 			hash: hashOfLockFile,
 			missedDependencies: missingDependencies
 		}, null, 2));
@@ -220,7 +222,7 @@ class UpNpmDependencies extends Controller {
 	 * @param {Array<String>} versionsList
 	 * @returns {Object}
 	 */
-	formatMissedDependency(dependency, versionsList) {
+	formatMissingDependency(dependency, versionsList) {
 		return {
 			name: dependency.name,
 			requestedVersion: dependency.version,
@@ -281,7 +283,7 @@ class UpNpmDependencies extends Controller {
 	 */
 	async getOverrides(name, version) {
 		const
-			{stdout} = await exec(`npm explain --json ${name}@${this.getMajorFromVersion(version)}`, stdoutOptions),
+			{stdout} = await exec(`npm explain --json ${name}@${this.getMajorFromVersion(version)}`, this.stdoutOptions),
 			parentsTree = JSON.parse(stdout),
 			overrides = {};
 
