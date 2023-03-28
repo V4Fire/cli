@@ -62,12 +62,18 @@ const options = yargs
 
 	.command(
 		'up-git',
-		'up git dependencies in project'
+		'up git dependencies in project',
+		(yargs) => {
+			yargs
+				.positional('dep', {
+					type: string
+				});
+		}
 	)
 
 	.command(
-		'deps',
-		'format dependencies with compatibility with the private registry'
+		'override-npm',
+		'format the dependencies in appropriate state for install with private registry'
 	)
 
 	.command(

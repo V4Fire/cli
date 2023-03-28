@@ -5,6 +5,7 @@ const ResolveChangelogController = require('./resolve-changelog');
 const CreateWorkspaceController = require('./create-workspace');
 const RemoveWorkspaceController = require('./remove-workspace');
 const UpGitController = require('./up-yarn-git-dependencies');
+const OverrideNpmController = require('./override-npm-dependencies');
 
 module.exports = {
 	MakeController,
@@ -13,5 +14,6 @@ module.exports = {
 	ResolveChangelogController,
 	CreateWorkspaceController,
 	UpGitController,
-	RemoveWorkspaceController
+	RemoveWorkspaceController,
+	OverrideNpmController
 };

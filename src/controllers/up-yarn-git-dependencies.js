@@ -78,11 +78,20 @@ class UpYarnGitDependencies extends Controller {
 	 * @returns {!Promise<void>}
 	 */
 	async run() {
-		this.extractGitDependencies();
-		this.removeGitDependenciesFromLockFile();
-		this.log.info(`Dependencies for update: ${this.gitDependencies.join(', ')}`);
+		const dependenciesToUpdate = this.getDependenciesToUpdate();
+		this.log.info(`Dependencies for update: ${dependenciesToUpdate.join(', ')}`);
+
+		this.removeGitDependenciesFromLockFile(dependenciesToUpdate);
 
 		await this.installDependencies();
+	}
+
+	getDependenciesToUpdate() {
+		if (this.config.dep) {
+			return [this.config.dep];
+		}
+
+		return this.extractGitDependencies();
 	}
 
 	/**
@@ -102,10 +111,10 @@ class UpYarnGitDependencies extends Controller {
 	/**
 	 * Removes all Git dependencies from the project lockfile
 	 */
-	removeGitDependenciesFromLockFile() {
+	removeGitDependenciesFromLockFile(dependenciesToUpdate) {
 		const lines = this.lockFile.split('\n');
 
-		this.gitDependencies.forEach((dependency) => {
+		dependenciesToUpdate.forEach((dependency) => {
 			const
 				startIndex = lines.findIndex((line) => line.startsWith(`"${dependency}`)),
 				endIndex = lines.indexOf('', startIndex);
