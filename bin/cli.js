@@ -66,6 +66,11 @@ const options = yargs
 	)
 
 	.command(
+		'deps',
+		'format dependencies with compatibility with the private registry'
+	)
+
+	.command(
 		'make <subject> <name> [path]',
 		'Make block, page or app',
 		(yargs) => {
