@@ -38,7 +38,7 @@ class UpNpmDependencies extends Controller {
 	/**
 	 * Private npm registry mirror, set by user
 	 */
-	userRegsitry = process.env.V4_REGISTRY;
+	userRegistry = process.env.V4_REGISTRY;
 
 	/**
 	 * Path to the project lock file
@@ -58,11 +58,11 @@ class UpNpmDependencies extends Controller {
 	 * @returns {Promise<void>}
 	 */
 	async run() {
-		if (!userRegsitry) {
+		if (!this.userRegistry) {
 			throw new Error('User Registry is not provided! Please use env variable V4_REGISTRY or .env file');
 		}
 
-		await this.setRegistry(this.userRegsitry);
+		await this.setRegistry(this.userRegistry);
 
 		const missingDependencies = await this.getMissingDependencies();
 		await this.saveMissingDependencies(missingDependencies);

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "mocha tests/**/**.test.js",
+    "test:eslint": "eslint 'src/*'",
     "newversion": "npm test && npm version patch --no-git-tag-version && npm run newversiongit && npm publish ./",
     "newversiongit": "git add --all  && git commit -m \"New version $npm_package_version. Read more https://github.com/V4Fire/cli/releases/tag/$npm_package_version \" && git tag $npm_package_version && git push --tags origin master"
   },
@@ -36,7 +37,7 @@
     "yargs": "15.4.1"
   },
   "devDependencies": {
-    "@v4fire/linters": "1.9.0",
+    "@v4fire/linters": "2.3.0",
     "chai": "4.2.0",
     "husky": "4.3.0",
     "lint-staged": ">=10",
