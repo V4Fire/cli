@@ -19,7 +19,7 @@ const
 require('@v4fire/core');
 require('dotenv').config();
 
-class UpNpmDependencies extends WorkspaceController {
+class ResolveYarnDependencies extends WorkspaceController {
 	/**
 	 * Path to temporary save the list of the missing dependencies
 	 */
@@ -43,7 +43,7 @@ class UpNpmDependencies extends WorkspaceController {
 	/**
 	 * Path to the project lock file
 	 */
-	lockFilePath = this.vfs.resolve('package-lock.json');
+	lockFilePath = this.vfs.resolve('yarn.lock');
 
 	/**
 	 * Path to the project `package.json` file
@@ -54,7 +54,7 @@ class UpNpmDependencies extends WorkspaceController {
 	 * Fetch dependencies versions from the private npm registry
 	 * and compares it with the installed dependencies from the external registry
 	 * If some dependencies is not exists in the private registry
-	 * creates `overrides` field for fixing it in package.json
+	 * creates `resolutions` field for fixing it in package.json
 	 * @returns {Promise<void>}
 	 */
 	async run() {
@@ -62,27 +62,31 @@ class UpNpmDependencies extends WorkspaceController {
 			throw new Error('User Registry is not provided! Please use env variable V4_REGISTRY or .env file');
 		}
 
-		await this.setRegistry(this.userRegistry);
+		try {
+			await this.setRegistry(this.userRegistry);
 
-		const
-			missingDependencies = await this.getMissingDependencies(),
-			overrides = await this.formatOverrides(missingDependencies);
+			const
+				missingDependencies = await this.getMissingDependencies(),
+				resolutions = await this.formatResolutions(missingDependencies);
 
-		await this.setOverrideToPackageJSON(overrides);
+			await this.setResolutionsToPackageJSON(resolutions);
 
-		await this.setRegistry(this.mainRegistry);
-		await this.installDependencies();
+			await this.installDependencies();
+
+		} finally {
+			await this.setRegistry(this.mainRegistry);
+		}
 	}
 
 	/**
-	 * Set overrides field in package.json
-	 * @param {Object} overrides
+	 * Set resolutions field in package.json
+	 * @param {Object} resolutions
 	 *
 	 * @returns {Promise<void>}
 	 */
-	async setOverrideToPackageJSON(overrides) {
+	async setResolutionsToPackageJSON(resolutions) {
 		const packageJSON = await this.getRootPackageJSON();
-		packageJSON.overrides = overrides;
+		packageJSON.resolutions = resolutions;
 
 		await this.writeRootPackageJSON(packageJSON);
 	}
@@ -124,14 +128,16 @@ class UpNpmDependencies extends WorkspaceController {
 		const
 			checkedDependencies = {},
 			missingDependencies = [],
-			deps = await this.getDependenciesOfProject();
+			deps = await this.getDependenciesOfProject(),
+			depsSources = await this.getDependenciesSources();
 
 		await $C(deps).forEach(async (dep) => {
 			const
 				{name, version} = dep,
-				hashKey = `${dep.name}@${dep.version}`;
+				hashKey = `${dep.name}@${dep.version}`,
+				isDependencyGit = depsSources[dep.name] !== 'npm';
 
-			if (!checkedDependencies[hashKey] && !this.isDependencyGit(dep)) {
+			if (!checkedDependencies[hashKey] && !isDependencyGit) {
 				checkedDependencies[hashKey] = true;
 
 				const versionsList = await this.getPackageVersions(name);
@@ -178,9 +184,34 @@ class UpNpmDependencies extends WorkspaceController {
 		return JSON.parse(stdout);
 	}
 
-	// TODO add memo
+	async getDependenciesSources() {
+		const
+			{stdout} = await exec('yarn info --all --recursive --json', this.stdoutOptions),
+			validSources = ['npm', 'https'];
+
+		return stdout
+			.split('\n')
+			.reduce((acc, item) => {
+				if (!item) {
+					return acc;
+				}
+
+				const
+					dependency = JSON.parse(item),
+					[dependencyNameWithSource] = dependency.value.split(':'),
+					// eslint-disable-next-line no-unused-vars
+					[_, name, source] = dependencyNameWithSource.match(/(.+)@(.+)/);
+
+				if (validSources.includes(source)) {
+					acc[name] = source;
+				}
+
+				return acc;
+			}, {});
+	}
+
 	/**
-	 * Get list of missed dependencies from cache
+	 * Get list of missing dependencies from cache
 	 * @returns {Promise<Object>}
 	 */
 	getCachedDependencies() {
@@ -189,7 +220,7 @@ class UpNpmDependencies extends WorkspaceController {
 		try {
 			cachedDependencies = JSON.parse(this.vfs.readFile(this.missingDependenciesFilePath, 'utf-8'));
 
-		} catch {}
+		} catch { }
 
 		return cachedDependencies;
 	}
@@ -199,7 +230,7 @@ class UpNpmDependencies extends WorkspaceController {
 	 * @return {Promise<String>}
 	 */
 	getLockFileHash() {
-		return hasha.fromFile('./package-lock.json');
+		return hasha.fromFile(this.lockFilePath);
 	}
 
 	/**
@@ -212,7 +243,7 @@ class UpNpmDependencies extends WorkspaceController {
 
 		this.vfs.writeFile(this.missingDependenciesFilePath, JSON.stringify({
 			hash: hashOfLockFile,
-			missedDependencies: missingDependencies
+			missingDependencies
 		}, null, 2));
 	}
 
@@ -240,23 +271,11 @@ class UpNpmDependencies extends WorkspaceController {
 		const {stdout} = await exec(`yarn info --json ${packageName} versions`);
 
 		try {
-			const packageVersions = JSON.parse(stdout).data;
-			return packageVersions;
+			return JSON.parse(stdout).data;
 
 		} catch (err) {
 			this.log.error(`Something went wrong while getting package versions of ${packageName}\n`, err);
 			return [];
-		}
-	}
-
-	/**
-	 * Checks is dependency installed from git
-	 * @param dependency
-	 * @returns {Boolean}
-	 */
-	isDependencyGit(dependency) {
-		if (dependency.resolved != null) {
-			return dependency.resolved.includes('git@git');
 		}
 	}
 
@@ -274,46 +293,6 @@ class UpNpmDependencies extends WorkspaceController {
 	}
 
 	/**
-	 * Returns overrides field in appropriate format
-	 * @see https://docs.npmjs.com/cli/v9/configuring-npm/package-json#overrides
-	 *
-	 * @param {String} name
-	 * @param {String} version
-	 * @returns {Object}
-	 */
-	async getOverrides(name, version) {
-		const
-			{stdout} = await exec(`npm explain --json ${name}@${this.getMajorFromVersion(version)}`, this.stdoutOptions),
-			parentsTree = JSON.parse(stdout),
-			overrides = {};
-
-		parentsTree.forEach((parentTree) => {
-			const isEveryParentSameMajorVersion = parentTree.dependents.every(
-				(parent) => this.getMajorFromVersion(parent.spec) === this.getMajorFromVersion(version)
-			);
-
-			if (isEveryParentSameMajorVersion) {
-				overrides[name] = version;
-
-			} else {
-				const parentsWithSameMajorVersion = parentTree.dependents.filter(
-					(parent) => this.getMajorFromVersion(parent.spec) === this.getMajorFromVersion(version)
-				);
-
-				parentsWithSameMajorVersion.forEach((parent) => {
-					const key = `${parent.from.name}@${parent.from.version}`;
-
-					overrides[key] = {
-						[name]: version
-					};
-				});
-			}
-		});
-
-		return overrides;
-	}
-
-	/**
 	 * Returns number of major version from full semver
 	 * 2.5.0 => 2
 	 * ^3.9.1 => 3
@@ -325,25 +304,18 @@ class UpNpmDependencies extends WorkspaceController {
 	}
 
 	/**
-	 * Format missing dependencies in format of `overrides` field in package.json
+	 * Format missing dependencies in format of `resolutions` field in package.json
 	 * for proper resolution of dependencies while installs from private registry
 	 * @param missingDependencies
 	 * @returns {Promise<Object>}
 	 */
-	formatOverrides(missingDependencies) {
-		return missingDependencies.reduce(async (acc, dependency) => {
-			const overridesAcc = await acc;
+	formatResolutions(missingDependencies) {
+		return missingDependencies.reduce((acc, dependency) => {
+			acc[dependency.name] = dependency.version;
 
-			if (dependency.name.startsWith('@types')) {
-				overridesAcc[dependency.name] = dependency.version;
-				return overridesAcc;
-			}
-
-			const overrides = await this.getOverrides(dependency.name, dependency.version);
-
-			return Object.assign(overridesAcc, overrides);
-		}, Promise.resolve({}));
+			return acc;
+		}, {});
 	}
 }
 
-module.exports = UpNpmDependencies;
+module.exports = ResolveYarnDependencies;

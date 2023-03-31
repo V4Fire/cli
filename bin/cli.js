@@ -72,7 +72,7 @@ const options = yargs
 	)
 
 	.command(
-		'override-npm',
+		'resolve-yarn',
 		'format the dependencies in appropriate state for install with private registry'
 	)
 
