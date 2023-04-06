@@ -1,6 +1,6 @@
 {
   "name": "@v4fire/cli",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "Tools for creating V4Fire blocks and pages from CLI",
   "main": "index.js",
   "bin": {
@@ -33,7 +33,7 @@
     "yargs": "17.7.1"
   },
   "devDependencies": {
-    "@v4fire/linters": "2.3.0",
+    "@v4fire/linters": "2.4.0",
     "chai": "4.3.7",
     "mocha": "10.2.0"
   },
