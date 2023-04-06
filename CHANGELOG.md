@@ -11,6 +11,14 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.5.0 (2023-04-14)
+
+#### :house: Internal
+
+* Moved on `yarn` package manager
+* Updated all dependencies
+* Removed `prettier`
+
 ## v1.4.2 (2022-12-20)
 
 #### :rocket: New Feature
