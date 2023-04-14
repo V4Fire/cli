@@ -27,10 +27,8 @@ $RECYCLE.BIN
 .LSOverride
 .vscode
 
-# Dependencies
-/node_modules
-/.yalc
-/yalc.lock
+# Icon must ends with two \r.
+Icon
 
 # Thumbnails
 ._*
@@ -39,20 +37,38 @@ $RECYCLE.BIN
 .Spotlight-V100
 .Trashes
 
+# Dependencies
+/bower_components
+/node_modules
+/.yalc
+/.yarn
+/yalc.lock
+
+# Build && test
+/coverage
+/.nyc_output
+/dist
+/tests
+/tsconfig.json
+/client.tsconfig.json
+.env
+
+# Log
+*.log
+/stats.json
+
 # Temporary
 *.tmp
 *.gz
 /Releases-js
 /tmp
 /app-cache
+/.eslintcache
 /app-std-cache
 /src/entries/tmp
 /db
 
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+# NPM ignore list
+/docs
+/.github
+/.husky
