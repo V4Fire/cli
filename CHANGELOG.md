@@ -11,6 +11,12 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v1.5.2 (2023-04-14)
+
+#### :bug: Bug Fix
+
+* Downgrade of the "chalk" package
+
 ## v1.5.1 (2023-04-14)
 
 #### :bug: Bug Fix
