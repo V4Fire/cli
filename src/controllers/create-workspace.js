@@ -228,7 +228,7 @@ class CreateWorkspaceController extends WorkspaceController {
 			version = /(?<=#).*$/.exec(dependencyVersion)[0];
 
 		} else {
-			version = /\d+\.\d+\.\d+(?:-[\w-]+)?$/.exec(dependencyVersion)[0];
+			version = /\d+\.\d+\.\d+(?:-[\w-.]+)?$/.exec(dependencyVersion)[0];
 		}
 
 		return {version, gitURL, gitSSHURL};

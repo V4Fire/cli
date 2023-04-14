@@ -9,6 +9,7 @@
     "@edadeal/core": "git+https://gitlab.edadeal.yandex-team.ru/frontend/core.git#npm8",
     "@edadeal/design-system": "git+https://gitlab.edadeal.yandex-team.ru/frontend/design-system.git#v.86",
     "@v4fire/client": "git+https://github.com/V4Fire/Client.git#webpack-cli/v2",
-    "@v4fire/core": "^3.65.1"
+    "@v4fire/core": "^3.65.1",
+    "beta": "3.34.3-beta.1"
   }
 }
