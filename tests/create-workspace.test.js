@@ -23,11 +23,16 @@ describe('`create-workspace` controller methods', () => {
 
 	describe('`getDependencyVersion`', () => {
 		it('should return a version of the package', () => {
-			expect(
-				controller.getDependencyVersion(packageJSON, '@edadeal/core')
-			).to.equal(
+			const
+				getVersion = controller.getDependencyVersion.bind(controller, packageJSON);
+
+			expect(getVersion('@edadeal/core')).to.equal(
 				'git+https://gitlab.edadeal.yandex-team.ru/frontend/core.git#npm8'
 			);
+
+			expect(getVersion('@v4fire/core')).to.equal('3.65.1');
+
+			expect(getVersion('beta')).to.equal('3.34.3-beta.1');
 		});
 
 		it('should do nothing if the package version is not exist', () => {
