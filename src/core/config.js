@@ -38,7 +38,7 @@ class Config {
 							return './src/pages';
 
 						case 'block':
-							return './src/base';
+							return './src/components';
 
 						default:
 							return './';
