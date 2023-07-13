@@ -13,15 +13,16 @@ const {Application} = require('../src/application');
 
 const options = yargs
 	.command(
-		'make-test <path> [runners..]',
+		'make-test <subject> <target>',
 		'Make test for module or component',
 		(yargs) => {
 			yargs
-				.positional('path', {
-					demandOption: true,
-					type: 'string'
+				.positional('subject', {
+					type: 'string',
+					choices: ['page', 'block']
 				})
-				.positional('runners', {
+				.positional('target', {
+					demandOption: true,
 					type: 'string'
 				});
 		}

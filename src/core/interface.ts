@@ -11,5 +11,5 @@ interface IConfig {
 	reporter: 'json' | 'raw' | 'silent';
 	template: 'default' | 'mono' | 'functional';
 	extend: 'default' | 'i-block' | 'i-data' | 'i-dynamic-page' | 'i-static-page';
-	runners?: string[];
+	target?: string;
 }
