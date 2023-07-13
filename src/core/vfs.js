@@ -177,6 +177,91 @@ class VirtualFileSystem {
 	getFilesByGlobPattern(pattern) {
 		return glob.sync(pattern);
 	}
+
+	/**
+	 * Finds target name in directory recursive and returns path of first match
+	 *
+	 * @param {string} source
+	 * @param {string} target
+	 * @returns {string | undefined}
+	 */
+	findInDir(source, target) {
+		const
+			sourcePath = this.resolve(source);
+
+		if (!this.isDirectory(sourcePath)) {
+			return sourcePath.split(path.sep).at(-1) === target ? sourcePath : undefined;
+		}
+
+		const
+			stack = this.readdir(sourcePath);
+
+		while (stack.length > 0) {
+			const
+				cur = stack.pop(),
+				curPath = this.resolve(sourcePath, cur);
+
+			if (cur.split(path.sep).at(-1) === target) {
+				return curPath;
+			}
+
+			if (this.isDirectory(curPath)) {
+				stack.push(...this.readdir(curPath).map((chunk) => `${cur}${path.sep}${chunk}`));
+			}
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Copy directory recursive
+	 *
+	 * @param {string} source
+	 * @param {string} destination
+	 * @param {string} [dataHandler]
+	 *
+	 * @returns {Promise<void>}
+	 */
+	copyDir(source, destination, dataHandler = undefined) {
+		this.#copyDir(source, destination, dataHandler, []);
+	}
+
+	/**
+	 * Copy directory recursive
+	 *
+	 * @param {string} source
+	 * @param {string} destination
+	 * @param {string} [dataWriteHandler]
+	 * @param {string} [pathStack]
+	 *
+	 * @returns {Promise<void>}
+	 */
+	async #copyDir(source, destination, dataWriteHandler = undefined, pathStack = []) {
+		const
+			curPath = this.resolve(source, ...pathStack),
+			isDirectory = this.isDirectory(curPath);
+
+		if (!isDirectory) {
+			const
+				fileData = this.readFile(curPath);
+
+			await this.ensureDir(this.resolve(destination, ...pathStack.slice(0, pathStack.length - 1)));
+
+			this.writeFile(
+				this.resolve(destination, ...pathStack),
+				dataWriteHandler(fileData)
+			);
+
+			return;
+		}
+
+		const
+			dir = this.readdir(curPath);
+
+		for (const file of dir) {
+			this.#copyDir(source, destination, dataWriteHandler, [...pathStack, file]);
+		}
+	}
 }
 
 exports.VirtualFileSystem = VirtualFileSystem;
