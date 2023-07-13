@@ -46,7 +46,7 @@ describe('Cli test', () => {
 				});
 
 				app.run().then(() => {
-					expect(app.vfs.exists('./src/base/b-point/b-point.ss')).is.true;
+					expect(app.vfs.exists('./src/components/b-point/b-point.ss')).is.true;
 
 					exec(
 						'node',
@@ -61,8 +61,8 @@ describe('Cli test', () => {
 								throw error;
 							}
 
-							expect(app.vfs.exists('./src/base/b-point/b-point.ss')).is.false;
-							expect(app.vfs.exists('./src/base/b-time/b-time.ss')).is.true;
+							expect(app.vfs.exists('./src/components/b-point/b-point.ss')).is.false;
+							expect(app.vfs.exists('./src/components/b-time/b-time.ss')).is.true;
 
 							done();
 						}

@@ -14,10 +14,10 @@ describe('Change template option', () => {
 
 				await app.run();
 
-				expect(app.vfs.exists('./src/base/b-test/b-test.ss')).is.true;
-				expect(app.vfs.exists('./src/base/b-test/b-test.styl')).is.true;
-				expect(app.vfs.exists('./src/base/b-test/b-test.ts')).is.false;
-				expect(app.vfs.readFile('./src/base/b-test/b-test.ss')).contains(
+				expect(app.vfs.exists('./src/components/b-test/b-test.ss')).is.true;
+				expect(app.vfs.exists('./src/components/b-test/b-test.styl')).is.true;
+				expect(app.vfs.exists('./src/components/b-test/b-test.ts')).is.false;
+				expect(app.vfs.readFile('./src/components/b-test/b-test.ss')).contains(
 					'- @@ignore'
 				);
 			});
@@ -34,100 +34,108 @@ describe('Change template option', () => {
 
 				await app.run();
 
-				expect(app.vfs.exists('./src/base/b-test/b-test.ss')).is.true;
-				expect(app.vfs.exists('./src/base/b-test/b-test.styl')).is.true;
-				expect(app.vfs.exists('./src/base/b-test/b-test.ts')).is.true;
-				expect(app.vfs.readFile('./src/base/b-test/b-test.ts')).contains(
+				expect(app.vfs.exists('./src/components/b-test/b-test.ss')).is.true;
+				expect(app.vfs.exists('./src/components/b-test/b-test.styl')).is.true;
+				expect(app.vfs.exists('./src/components/b-test/b-test.ts')).is.true;
+				expect(app.vfs.readFile('./src/components/b-test/b-test.ts')).contains(
 					'@component({functional: true})'
 				);
 			});
 		});
 	});
 
-	describe('Make test', () => {
-		describe('for component', () => {
+	describe('`make-test`', () => {
+		describe('`block`', () => {
 			it('should provide name of component', async () => {
 				const app = getApplication({
-					path: 'src/base/b-slider',
 					command: 'make-test',
-					runners: []
+					subject: 'block',
+					target: 'src/components/b-test'
 				});
 
 				await app.run();
 
 				const testFileText = app.vfs.readFile(
-					'./src/base/b-slider/test/index.js'
+					'./src/components/b-test/test/unit/main.ts'
 				);
 
-				expect(testFileText).contains('b-slider');
-				expect(testFileText).contains('bSlider');
-				expect(testFileText).not.contains('bDummy');
-				expect(testFileText).not.contains('b-dummy');
+				expect(testFileText).contains('b-test');
+				expect(testFileText).contains('bTest');
 				expect(testFileText).not.contains('bName');
 				expect(testFileText).not.contains('b-name');
 			});
 
-			it('should provide name of component in runner', async () => {
+			it('should make test for block by name', async () => {
 				const app = getApplication({
-					path: 'src/base/b-slider',
+					command: 'make',
+					subject: 'block',
+					name: 'b-foo'
+				});
+
+				const testApp = getApplication({
 					command: 'make-test',
-					runners: ['events']
+					subject: 'block',
+					target: 'b-foo'
 				});
 
 				await app.run();
+				await testApp.run();
 
-				const runnerFileText = app.vfs.readFile(
-					'./src/base/b-slider/test/runners/events.js'
+				const testFileText = app.vfs.readFile(
+					'./src/components/b-foo/test/unit/main.ts'
 				);
 
-				expect(runnerFileText).contains('b-slider');
-				expect(runnerFileText).contains('bSlider');
-				expect(runnerFileText).contains('events');
-				expect(runnerFileText).not.contains('runner');
-				expect(runnerFileText).not.contains('bDummy');
-				expect(runnerFileText).not.contains('b-dummy');
-				expect(runnerFileText).not.contains('bName');
-				expect(runnerFileText).not.contains('b-name');
+				expect(testFileText).contains('b-foo');
+				expect(testFileText).contains('bFoo');
+				expect(testFileText).not.contains('bName');
+				expect(testFileText).not.contains('b-name');
 			});
 		});
 
-		describe('for module', () => {
-			it('should provide name of module', async () => {
+		describe('`page`', () => {
+			it('should provide name of page', async () => {
 				const app = getApplication({
-					path: 'src/base/some-module',
 					command: 'make-test',
-					runners: []
+					subject: 'page',
+					target: 'src/pages/p-foo'
 				});
 
 				await app.run();
 
 				const testFileText = app.vfs.readFile(
-					'./src/base/some-module/test/index.js'
+					'./src/pages/p-foo/test/project/main.ts'
 				);
 
-				expect(testFileText).contains('some-module');
-				expect(testFileText).contains('bDummy');
-				expect(testFileText).not.contains('name');
+				expect(testFileText).contains('p-foo');
+				expect(testFileText).contains('Foo');
+				expect(testFileText).not.contains('p-name');
+				expect(testFileText).not.contains('RName');
 			});
 
-			it('should provide name of module in runner', async () => {
+			it('should make test for block by name', async () => {
 				const app = getApplication({
-					path: 'src/base/some-module',
+					command: 'make',
+					subject: 'page',
+					name: 'p-foo'
+				});
+
+				const testApp = getApplication({
 					command: 'make-test',
-					runners: ['events']
+					subject: 'page',
+					target: 'p-foo'
 				});
 
 				await app.run();
+				await testApp.run();
 
-				const runnerFileText = app.vfs.readFile(
-					'./src/base/some-module/test/runners/events.js'
+				const testFileText = app.vfs.readFile(
+					'./src/pages/p-foo/test/project/main.ts'
 				);
 
-				expect(runnerFileText).contains('some-module');
-				expect(runnerFileText).contains('bDummy');
-				expect(runnerFileText).contains('b-dummy');
-				expect(runnerFileText).not.contains('runner');
-				expect(runnerFileText).not.contains('name');
+				expect(testFileText).contains('b-foo');
+				expect(testFileText).contains('bFoo');
+				expect(testFileText).not.contains('bName');
+				expect(testFileText).not.contains('b-name');
 			});
 		});
 	});

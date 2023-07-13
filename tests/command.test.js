@@ -12,7 +12,7 @@ describe('Exec command', () => {
 
 			await app.run();
 
-			expect(app.vfs.exists('./src/base/b-test/b-test.ss')).is.true;
+			expect(app.vfs.exists('./src/components/b-test/b-test.ss')).is.true;
 		});
 	});
 
@@ -26,9 +26,9 @@ describe('Exec command', () => {
 
 			await app.run();
 
-			expect(app.vfs.exists('./src/base/b-test/b-test.ss')).is.true;
-			expect(app.vfs.exists('./src/base/b-test/CHANGELOG.md')).is.true;
-			expect(app.vfs.exists('./src/base/b-test/README.md')).is.true;
+			expect(app.vfs.exists('./src/components/b-test/b-test.ss')).is.true;
+			expect(app.vfs.exists('./src/components/b-test/CHANGELOG.md')).is.true;
+			expect(app.vfs.exists('./src/components/b-test/README.md')).is.true;
 
 			const app2 = getApplication({
 				command: 'rename',
@@ -38,15 +38,15 @@ describe('Exec command', () => {
 
 			await app2.run();
 
-			expect(app2.vfs.exists('./src/base/b-test/b-test.ss')).is.false;
-			expect(app2.vfs.exists('./src/base/b-plot/b-plot.ss')).is.true;
-			expect(app2.vfs.exists('./src/base/b-plot/CHANGELOG.md')).is.true;
-			expect(app2.vfs.exists('./src/base/b-plot/README.md')).is.true;
-			expect(app2.vfs.readFile('./src/base/b-plot/b-plot.ts')).contains(
+			expect(app2.vfs.exists('./src/components/b-test/b-test.ss')).is.false;
+			expect(app2.vfs.exists('./src/components/b-plot/b-plot.ss')).is.true;
+			expect(app2.vfs.exists('./src/components/b-plot/CHANGELOG.md')).is.true;
+			expect(app2.vfs.exists('./src/components/b-plot/README.md')).is.true;
+			expect(app2.vfs.readFile('./src/components/b-plot/b-plot.ts')).contains(
 				'bPlot'
 			);
 
-			expect(app2.vfs.readFile('./src/base/b-plot/b-plot.styl')).contains(
+			expect(app2.vfs.readFile('./src/components/b-plot/b-plot.styl')).contains(
 				'b-plot'
 			);
 		});
@@ -61,7 +61,7 @@ describe('Exec command', () => {
 
 			await app.run();
 
-			expect(app.vfs.readFile('./src/base/b-test/b-test.ts')).contains(
+			expect(app.vfs.readFile('./src/components/b-test/b-test.ts')).contains(
 				'extends iData'
 			);
 
@@ -73,44 +73,24 @@ describe('Exec command', () => {
 			});
 
 			await app2.run();
-			expect(app2.vfs.readFile('./src/base/b-plot/b-plot.ts')).contains(
+			expect(app2.vfs.readFile('./src/components/b-plot/b-plot.ts')).contains(
 				'extends iData'
 			);
 		});
 	});
 
 	describe('Make test', () => {
-		it('should create test without runners', async () => {
+		it('should create test without path', async () => {
 			const app = getApplication({
-				path: 'src/base/b-slider',
 				command: 'make-test',
-				runners: []
+				subject: 'block',
+				target: 'b-slider'
 			});
 
 			await app.run();
 
-			expect(app.vfs.exists('./src/base/b-slider/test/index.js')).is.true;
-			expect(app.vfs.exists('./src/base/b-slider/test/runners')).is.false;
-		});
-
-		it('should create test with runners', async () => {
-			const app = getApplication({
-				path: 'src/base/b-slider',
-				command: 'make-test',
-				runners: ['analytics', 'events', 'render']
-			});
-
-			await app.run();
-
-			expect(app.vfs.exists('./src/base/b-slider/test/index.js')).is.true;
-			expect(app.vfs.exists('./src/base/b-slider/test/runners/analytics.js')).is
-				.true;
-
-			expect(app.vfs.exists('./src/base/b-slider/test/runners/events.js')).is
-				.true;
-
-			expect(app.vfs.exists('./src/base/b-slider/test/runners/render.js')).is
-				.true;
+			expect(app.vfs.exists('./src/components/b-slider/test/mock-data.ts')).is.true;
+			expect(app.vfs.exists('./src/components/b-slider/test/unit/main.ts')).is.false;
 		});
 	});
 });

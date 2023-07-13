@@ -7,12 +7,12 @@ describe('Change path option', () => {
 			command: 'make',
 			subject: 'block',
 			name: 'test',
-			path: './src/base/test/best/pop/'
+			path: './src/components/test/best/pop/'
 		});
 
 		await app.run();
 
-		expect(app.vfs.exists('./src/base/test/best/pop/b-test/b-test.ss')).is.true;
+		expect(app.vfs.exists('./src/components/test/best/pop/b-test/b-test.ss')).is.true;
 	});
 
 	it('should change relative path inside .md files', async () => {
@@ -20,17 +20,17 @@ describe('Change path option', () => {
 			command: 'make',
 			subject: 'block',
 			name: 'test',
-			path: './src/base/test/best/pop/'
+			path: './src/components/test/best/pop/'
 		});
 
 		await app.run();
 
 		expect(
-			app.vfs.readFile('./src/base/test/best/pop/b-test/b-test.ts')
-		).contains('[[include:base/test/best/pop/b-test/README.md]]');
+			app.vfs.readFile('./src/components/test/best/pop/b-test/b-test.ts')
+		).contains('[[include:components/test/best/pop/b-test/README.md]]');
 
 		expect(
-			app.vfs.readFile('./src/base/test/best/pop/b-test/README.md')
-		).contains('# base/test/best/pop/b-test');
+			app.vfs.readFile('./src/components/test/best/pop/b-test/README.md')
+		).contains('# components/test/best/pop/b-test');
 	});
 });
