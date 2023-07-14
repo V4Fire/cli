@@ -13,3 +13,9 @@ interface IConfig {
 	extend: 'default' | 'i-block' | 'i-data' | 'i-dynamic-page' | 'i-static-page';
 	target?: string;
 }
+
+interface CopyDirOptions {
+	afterEachCopy(destPath: string): unknown;
+	onDataWrite(data: string): string | object;
+	withFolders: boolean;
+}

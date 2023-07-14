@@ -214,43 +214,48 @@ class VirtualFileSystem {
 	}
 
 	/**
-	 * Copy directory recursive
+	 * Copies files and directories from source to destination
 	 *
 	 * @param {string} source
 	 * @param {string} destination
-	 * @param {Function} [dataWriteHandler]
+	 * @param {CopyDirOptions} [options]
 	 *
 	 * @returns {Promise<void>}
 	 */
-	copyDir(source, destination, dataWriteHandler = undefined) {
-		return this.#copyDir(source, destination, dataWriteHandler, []);
+	copyDir(source, destination, options) {
+		return this.#copyDir(source, destination, options);
 	}
 
 	/**
-	 * Copy directory recursive
+	 * Copies files and directories from source to destination
 	 *
 	 * @param {string} source
 	 * @param {string} destination
-	 * @param {Function} [dataWriteHandler]
+	 * @param {CopyDirOptions} [options]
 	 * @param {string[]} [pathStack]
 	 *
 	 * @returns {Promise<void>}
 	 */
-	async #copyDir(source, destination, dataWriteHandler = undefined, pathStack = []) {
+	async #copyDir(source, destination, options = {}, pathStack = []) {
+		const
+			{onDataWrite, afterEachCopy, withFolders = true} = options;
+
 		const
 			curPath = this.resolve(source, ...pathStack),
 			isDirectory = this.isDirectory(curPath);
 
 		if (!isDirectory) {
 			const
-				fileData = this.readFile(curPath);
+				fileData = this.readFile(curPath),
+				destPath = this.resolve(destination, ...pathStack);
 
 			await this.ensureDir(this.resolve(destination, ...pathStack.slice(0, pathStack.length - 1)));
 
-			this.writeFile(
-				this.resolve(destination, ...pathStack),
-				dataWriteHandler(fileData)
-			);
+			this.writeFile(destPath, typeof onDataWrite === 'function' ? onDataWrite(fileData) : undefined);
+
+			if (typeof afterEachCopy === 'function') {
+				afterEachCopy(destPath);
+			}
 
 			return;
 		}
@@ -259,7 +264,11 @@ class VirtualFileSystem {
 			dir = this.readdir(curPath);
 
 		for (const file of dir) {
-			await this.#copyDir(source, destination, dataWriteHandler, [...pathStack, file]);
+			if (!withFolders && this.isDirectory(this.resolve(curPath, file))) {
+				continue;
+			}
+
+			await this.#copyDir(source, destination, options, [...pathStack, file]);
 		}
 	}
 }

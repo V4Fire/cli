@@ -19,6 +19,10 @@ class Controller {
 	 */
 	log;
 
+	get prefix() {
+		return this.config.subject === 'page' ? 'p' : 'b';
+	}
+
 	/**
 	 * @param {IConfig} config
 	 * @param {VirtualFileSystem} vfs
@@ -37,48 +41,6 @@ class Controller {
 	 */
 	resolveName(name, prefix = 'b') {
 		return /^[bp]-/.test(name) ? name : `${prefix}-${name}`;
-	}
-
-	/**
-	 * Copy files and directories from source to destination
-	 *
-	 * @param {string} source
-	 * @param {string} destination
-	 * @param {string} name
-	 * @param {boolean} withFolders
-	 * @private
-	 */
-	copyFolder(source, destination, name, withFolders = false) {
-		const files = this.vfs.readdir(source);
-
-		for (const file of files) {
-			const fileName = this.vfs.resolve(source, file);
-
-			if (this.vfs.isDirectory(fileName)) {
-				if (withFolders) {
-					this.log.msg(`Directory:${fileName}`);
-					this.vfs.ensureDir(this.vfs.resolve(destination, file));
-					this.copyFolder(
-						fileName,
-						this.vfs.resolve(destination, file),
-						name,
-						true
-					);
-				} else if (file === this.config.template) {
-					this.copyFolder(fileName, destination, name);
-				}
-
-				continue;
-			}
-
-			const data = this.vfs.readFile(fileName),
-				newFile = this.vfs.resolve(destination, this.replaceNames(file, name));
-
-			if (!this.vfs.exists(newFile) || this.config.override) {
-				this.log.msg(`File:${newFile}`);
-				this.vfs.writeFile(newFile, this.replaceNames(data, name));
-			}
-		}
 	}
 
 	/**

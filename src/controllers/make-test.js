@@ -11,6 +11,7 @@ class MakeTestController extends Controller {
 	 */
 	ast;
 
+	/** @override */
 	async run() {
 		this.updateDemoPageDeps();
 
@@ -27,9 +28,10 @@ class MakeTestController extends Controller {
 
 		if (this.config.target.split(path.sep).length === 1) {
 			const
-				chunk = this.config.subject === 'page' ? 'pages' : 'components';
+				chunk = this.config.subject === 'page' ? 'pages' : 'components',
+				name = this.resolveName(this.config.target, this.prefix);
 
-			destination = this.vfs.findInDir(this.vfs.resolve('src', chunk), this.config.target);
+			destination = this.vfs.findInDir(this.vfs.resolve('src', chunk), name);
 		}
 
 		await this.vfs.ensureDir(destination, 'test');
@@ -39,7 +41,7 @@ class MakeTestController extends Controller {
 	}
 
 	/**
-	 * Copies test folder from source to destination with replacing component/module names
+	 * Copies tests files from source to destination and fills templates
 	 *
 	 * @param {string} source
 	 * @param {string} destination
@@ -50,8 +52,7 @@ class MakeTestController extends Controller {
 		await this.vfs.ensureDir(destination);
 
 		const
-			prefix = this.config.subject === 'page' ? 'p-' : 'b-',
-			name = destination.split(path.sep).at(-2).replace(RegExp(prefix), '');
+			clearName = destination.split(path.sep).at(-2).replace(RegExp(`${this.prefix}-`), '');
 
 		const
 			sourcePath = this.vfs.resolve(source),
@@ -60,11 +61,14 @@ class MakeTestController extends Controller {
 		await this.vfs.copyDir(
 			sourcePath,
 			destinationPath,
-			(data) => this.replaceNames(
-				data,
-				[`${prefix}name`, `${prefix}${name}`],
-				['r-name', name]
-			)
+			{
+				onDataWrite: (data) => this.replaceNames(
+					data,
+					[`${this.prefix}-name`, `${this.prefix}-${clearName}`],
+					['r-name', clearName]
+				),
+				afterEachCopy: (path) => this.log.msg(`Create: ${path}`)
+			}
 		);
 	}
 
