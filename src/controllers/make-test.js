@@ -25,14 +25,14 @@ class MakeTestController extends Controller {
 		let
 			destination = this.vfs.resolve(this.config.target);
 
-		if (destination.split(path.sep).length < 0) {
+		if (this.config.target.split(path.sep).length === 1) {
 			const
 				chunk = this.config.subject === 'page' ? 'pages' : 'components';
 
 			destination = this.vfs.findInDir(this.vfs.resolve('src', chunk), this.config.target);
 		}
 
-		this.vfs.ensureDir(destination, 'test');
+		await this.vfs.ensureDir(destination, 'test');
 		destination = this.vfs.resolve(destination, 'test');
 
 		await this.copyTestFolder(source, destination);
@@ -46,8 +46,8 @@ class MakeTestController extends Controller {
 	 *
 	 * @returns {Promise<void>}
 	 */
-	copyTestFolder(source, destination) {
-		this.vfs.ensureDir(destination);
+	async copyTestFolder(source, destination) {
+		await this.vfs.ensureDir(destination);
 
 		const
 			prefix = this.config.subject === 'page' ? 'p-' : 'b-',
@@ -57,7 +57,7 @@ class MakeTestController extends Controller {
 			sourcePath = this.vfs.resolve(source),
 			destinationPath = this.vfs.resolve(destination);
 
-		this.vfs.copyDir(
+		await this.vfs.copyDir(
 			sourcePath,
 			destinationPath,
 			(data) => this.replaceNames(
@@ -156,9 +156,6 @@ class MakeTestController extends Controller {
 		[defName, newName],
 		[clearName, newClearName]
 	) {
-		console.log('def', defName, newName);
-		console.log('clear', clearName, newClearName);
-
 		return content
 			.replace(
 				RegExp(`${defName}|${clearName}`, 'g'),

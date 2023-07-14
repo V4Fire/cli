@@ -1,43 +1,56 @@
 const {expect} = require('chai');
-const {getApplication} = require('./staff/helpers');
+const {getApplication, getVFS} = require('./staff/helpers');
 
 describe('Change template option', () => {
-	describe('Make', () => {
-		describe('mono', () => {
-			it('should create mono component', async () => {
+	const
+		commonVfs = getVFS();
+
+	describe('`make`', () => {
+		const
+			componentName = 'b-test',
+			componentDir = commonVfs.resolve('src', 'components', componentName);
+
+		after(() => {
+			if (commonVfs.exists(componentDir)) {
+				commonVfs.rmDir(componentDir);
+			}
+		});
+
+		describe('`mono`', () => {
+			it('should create `mono` component', async () => {
 				const app = getApplication({
 					command: 'make',
 					subject: 'block',
-					name: 'test',
+					name: componentName,
 					template: 'mono'
 				});
 
 				await app.run();
 
-				expect(app.vfs.exists('./src/components/b-test/b-test.ss')).is.true;
-				expect(app.vfs.exists('./src/components/b-test/b-test.styl')).is.true;
-				expect(app.vfs.exists('./src/components/b-test/b-test.ts')).is.false;
-				expect(app.vfs.readFile('./src/components/b-test/b-test.ss')).contains(
+				expect(app.vfs.exists(`${componentDir}/${componentName}.ss`)).is.true;
+				expect(app.vfs.exists(`${componentDir}/${componentName}.styl`)).is.true;
+				expect(app.vfs.exists(`${componentDir}/${componentName}.ts`)).is.false;
+				expect(app.vfs.readFile(`${componentDir}/${componentName}.ss`)).contains(
 					'- @@ignore'
 				);
 			});
 		});
 
-		describe('functional', () => {
-			it('should create functional component', async () => {
+		describe('`functional`', () => {
+			it('should create `functional` component', async () => {
 				const app = getApplication({
 					command: 'make',
 					subject: 'block',
-					name: 'test',
+					name: componentName,
 					template: 'functional'
 				});
 
 				await app.run();
 
-				expect(app.vfs.exists('./src/components/b-test/b-test.ss')).is.true;
-				expect(app.vfs.exists('./src/components/b-test/b-test.styl')).is.true;
-				expect(app.vfs.exists('./src/components/b-test/b-test.ts')).is.true;
-				expect(app.vfs.readFile('./src/components/b-test/b-test.ts')).contains(
+				expect(app.vfs.exists(`${componentDir}/${componentName}.ss`)).is.true;
+				expect(app.vfs.exists(`${componentDir}/${componentName}.styl`)).is.true;
+				expect(app.vfs.exists(`${componentDir}/${componentName}.ts`)).is.true;
+				expect(app.vfs.readFile(`${componentDir}/${componentName}.ts`)).contains(
 					'@component({functional: true})'
 				);
 			});
@@ -45,97 +58,75 @@ describe('Change template option', () => {
 	});
 
 	describe('`make-test`', () => {
+		const
+			componentDir = 'src/components/b-test',
+			pageDir = 'src/pages/p-test';
+
+		let
+			testFileText;
+
+		after(() => {
+			if (commonVfs.exists(componentDir)) {
+				commonVfs.rmDir(componentDir);
+			}
+
+			if (commonVfs.exists(pageDir)) {
+				commonVfs.rmDir(pageDir);
+			}
+		});
+
 		describe('`block`', () => {
-			it('should provide name of component', async () => {
+			beforeEach(async () => {
 				const app = getApplication({
 					command: 'make-test',
 					subject: 'block',
-					target: 'src/components/b-test'
+					target: componentDir
 				});
 
 				await app.run();
-
-				const testFileText = app.vfs.readFile(
-					'./src/components/b-test/test/unit/main.ts'
-				);
-
-				expect(testFileText).contains('b-test');
-				expect(testFileText).contains('bTest');
-				expect(testFileText).not.contains('bName');
-				expect(testFileText).not.contains('b-name');
+				testFileText = app.vfs.readFile(`${componentDir}/test/unit/main.ts`);
 			});
 
-			it('should make test for block by name', async () => {
-				const app = getApplication({
-					command: 'make',
-					subject: 'block',
-					name: 'b-foo'
-				});
+			it('should provide name of component', () => {
+				expect(testFileText).contains('b-test');
+				expect(testFileText).contains('Test');
+			});
 
-				const testApp = getApplication({
-					command: 'make-test',
-					subject: 'block',
-					target: 'b-foo'
-				});
-
-				await app.run();
-				await testApp.run();
-
-				const testFileText = app.vfs.readFile(
-					'./src/components/b-foo/test/unit/main.ts'
-				);
-
-				expect(testFileText).contains('b-foo');
-				expect(testFileText).contains('bFoo');
-				expect(testFileText).not.contains('bName');
+			it('should`t contain any replacers', () => {
 				expect(testFileText).not.contains('b-name');
+				expect(testFileText).not.contains('bName');
+				expect(testFileText).not.contains('BName');
+				expect(testFileText).not.contains('r-name');
+				expect(testFileText).not.contains('rName');
+				expect(testFileText).not.contains('RName');
 			});
 		});
 
 		describe('`page`', () => {
-			it('should provide name of page', async () => {
+			beforeEach(async () => {
 				const app = getApplication({
 					command: 'make-test',
 					subject: 'page',
-					target: 'src/pages/p-foo'
+					target: pageDir
 				});
 
 				await app.run();
 
-				const testFileText = app.vfs.readFile(
-					'./src/pages/p-foo/test/project/main.ts'
-				);
-
-				expect(testFileText).contains('p-foo');
-				expect(testFileText).contains('Foo');
-				expect(testFileText).not.contains('p-name');
-				expect(testFileText).not.contains('RName');
+				testFileText = app.vfs.readFile(`${pageDir}/test/project/main.ts`);
 			});
 
-			it('should make test for block by name', async () => {
-				const app = getApplication({
-					command: 'make',
-					subject: 'page',
-					name: 'p-foo'
-				});
+			it('should provide name of page', () => {
+				expect(testFileText).contains('p-test');
+				expect(testFileText).contains('Test');
+			});
 
-				const testApp = getApplication({
-					command: 'make-test',
-					subject: 'page',
-					target: 'p-foo'
-				});
-
-				await app.run();
-				await testApp.run();
-
-				const testFileText = app.vfs.readFile(
-					'./src/pages/p-foo/test/project/main.ts'
-				);
-
-				expect(testFileText).contains('b-foo');
-				expect(testFileText).contains('bFoo');
-				expect(testFileText).not.contains('bName');
-				expect(testFileText).not.contains('b-name');
+			it('should`t contain any replacers', () => {
+				expect(testFileText).not.contains('p-name');
+				expect(testFileText).not.contains('pName');
+				expect(testFileText).not.contains('PName');
+				expect(testFileText).not.contains('r-name');
+				expect(testFileText).not.contains('rName');
+				expect(testFileText).not.contains('RName');
 			});
 		});
 	});

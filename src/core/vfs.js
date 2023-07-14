@@ -218,12 +218,12 @@ class VirtualFileSystem {
 	 *
 	 * @param {string} source
 	 * @param {string} destination
-	 * @param {string} [dataHandler]
+	 * @param {Function} [dataWriteHandler]
 	 *
 	 * @returns {Promise<void>}
 	 */
-	copyDir(source, destination, dataHandler = undefined) {
-		this.#copyDir(source, destination, dataHandler, []);
+	copyDir(source, destination, dataWriteHandler = undefined) {
+		return this.#copyDir(source, destination, dataWriteHandler, []);
 	}
 
 	/**
@@ -231,8 +231,8 @@ class VirtualFileSystem {
 	 *
 	 * @param {string} source
 	 * @param {string} destination
-	 * @param {string} [dataWriteHandler]
-	 * @param {string} [pathStack]
+	 * @param {Function} [dataWriteHandler]
+	 * @param {string[]} [pathStack]
 	 *
 	 * @returns {Promise<void>}
 	 */
@@ -259,7 +259,7 @@ class VirtualFileSystem {
 			dir = this.readdir(curPath);
 
 		for (const file of dir) {
-			this.#copyDir(source, destination, dataWriteHandler, [...pathStack, file]);
+			await this.#copyDir(source, destination, dataWriteHandler, [...pathStack, file]);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 const {Application} = require('../../src/application');
+const {VirtualFileSystem} = require('../../src/core/vfs');
 
 /**
  * @param {IConfig} options
@@ -12,4 +13,11 @@ function getApplication(options) {
 	});
 }
 
-module.exports.getApplication = getApplication;
+/**
+ * @returns {VirtualFileSystem}
+ */
+function getVFS() {
+	return new VirtualFileSystem();
+}
+
+module.exports = {getApplication, getVFS};

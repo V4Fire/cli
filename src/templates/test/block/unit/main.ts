@@ -3,6 +3,8 @@ import type { JSHandle } from 'playwright';
 import test from 'tests/config/unit/test';
 import Component from 'tests/helpers/component';
 
+import type { RName } from 'src/components/b-name/b-name.ts';
+
 test.describe('<b-name>', () => {
   const scheme = [
     {
@@ -14,7 +16,7 @@ test.describe('<b-name>', () => {
 
   let
     node: JSHandle<unknown>,
-    component: JSHandle<unknown>;
+    component: JSHandle<RName>;
 
   test.beforeEach(async ({demoPage, page}) => {
     await demoPage.goto();
