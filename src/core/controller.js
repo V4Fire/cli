@@ -19,6 +19,11 @@ class Controller {
 	 */
 	log;
 
+	/**
+	 * Prefix for a current subject
+	 *
+	 * @returns {string}
+	 */
 	get prefix() {
 		return this.config.subject === 'page' ? 'p' : 'b';
 	}

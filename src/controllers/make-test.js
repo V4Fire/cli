@@ -41,7 +41,7 @@ class MakeTestController extends Controller {
 	}
 
 	/**
-	 * Copies tests files from source to destination and fills templates
+	 * Copies tests files from the source to the destination and fills templates
 	 *
 	 * @param {string} source
 	 * @param {string} destination

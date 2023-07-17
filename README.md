@@ -100,26 +100,26 @@ WARNING: Conflicts within the same record may not be resolved correctly!
 ```bash
 v4fire make-test block hello-world
 ```
-It will create tests for `src/components/b-hello-world` component if it exists.
+It will generate simple tests for the `src/components/**/b-hello-world` component, if it exists.
 
 ```bash
 v4fire make-test page slider
 ```
-It will create tests for `src/pages/p-slider` page if it exists.
+It will generate simple tests for the `src/pages/**/p-slider` page, if it exists.
 
 ```bash
 v4fire make-test block src/foo/bar/componentName
 ```
-It will create tests for component in `src/foo/bar/componentName` folder
+It will generate simple `component` tests in the `src/foo/bar/componentName` folder
 
 ```bash
 v4fire make-test page src/foo/bar/componentName
 ```
-It will create tests for page in `src/foo/bar/componentName` folder
+It will generate simple `page` tests in the `src/foo/bar/componentName` folder
 
 The tool also will take care of updating [demo-page](https://github.com/V4Fire/Client/blob/master/src/pages/p-v4-components-demo/index.js)
 
-The tool generates a `test` folder for both components and pages. The [template for component](src/templates/test/block) and [template for page](src/templates/test/block) contain the basic test setup and executes simple test.
+The tool generates a `test` folder for both components and pages. The [template for component](src/templates/test/block) and the [template for page](src/templates/test/block) contain the basic test setup and can execute these simple tests.
 
 #### Runners
 

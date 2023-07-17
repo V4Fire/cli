@@ -14,7 +14,7 @@ const {Application} = require('../src/application');
 const options = yargs
 	.command(
 		'make-test <subject> <target>',
-		'Make test for module or component',
+		'Make test for page or component',
 		(yargs) => {
 			yargs
 				.positional('subject', {
@@ -149,16 +149,12 @@ const options = yargs
 	.example('v4fire make block point', 'Make i-block b-point')
 	.example('v4fire make page card', 'Make i-dynamic-page p-card')
 	.example(
-		'v4fire make-test src/core/view-history',
-		'Make tests for view-history module'
+		'v4fire make-test block slider',
+		'Make tests for src/components/**/b-slider component, if it exists'
 	)
 	.example(
-		'v4fire make-test src/base/b-slider',
-		'Make tests for b-slider component'
-	)
-	.example(
-		'v4fire make-test src/base/b-slider analytics render events',
-		'Make tests for b-slider component with different runners'
+		'v4fire make-test page src/[path]/p-test',
+		'Make tests for src/[path]/p-test page'
 	)
 	.example(
 		'v4fire resolve-changelog',

@@ -179,7 +179,7 @@ class VirtualFileSystem {
 	}
 
 	/**
-	 * Finds target name in directory recursive and returns path of first match
+	 * Recursively searches for the target name in a directory and returns the path of the first match found
 	 *
 	 * @param {string} source
 	 * @param {string} target
@@ -214,7 +214,7 @@ class VirtualFileSystem {
 	}
 
 	/**
-	 * Copies files and directories from source to destination
+	 * Copies files and directories from the source to the destination
 	 *
 	 * @param {string} source
 	 * @param {string} destination
@@ -227,7 +227,7 @@ class VirtualFileSystem {
 	}
 
 	/**
-	 * Copies files and directories from source to destination
+	 * Copies files and directories from the source to the destination
 	 *
 	 * @param {string} source
 	 * @param {string} destination

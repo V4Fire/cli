@@ -15,7 +15,7 @@ interface IConfig {
 }
 
 interface CopyDirOptions {
-	afterEachCopy(destPath: string): unknown;
-	onDataWrite(data: string): string | object;
-	withFolders: boolean;
+	afterEachCopy?(destPath: string): unknown;
+	onDataWrite?(data: string): string | object;
+	withFolders?: boolean;
 }
