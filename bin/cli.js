@@ -153,8 +153,8 @@ const options = yargs
 		'Make tests for src/components/**/b-slider component, if it exists'
 	)
 	.example(
-		'v4fire make-test page src/[path]/p-test',
-		'Make tests for src/[path]/p-test page'
+		'v4fire make-test page src/foo/bar/p-test',
+		'Make tests for src/foo/bar/p-test page'
 	)
 	.example(
 		'v4fire resolve-changelog',

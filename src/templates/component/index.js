@@ -1,2 +1,2 @@
 package('b-name')
-    .extends('i-block');
+	.extends('i-block');
