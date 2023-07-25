@@ -179,41 +179,6 @@ class VirtualFileSystem {
 	}
 
 	/**
-	 * Recursively searches for the target name in a directory and returns the path of the first match found
-	 *
-	 * @param {string} source
-	 * @param {string} target
-	 * @returns {string | undefined}
-	 */
-	findInDir(source, target) {
-		const
-			sourcePath = this.resolve(source);
-
-		if (!this.isDirectory(sourcePath)) {
-			return sourcePath.split(path.sep).at(-1) === target ? sourcePath : undefined;
-		}
-
-		const
-			stack = this.readdir(sourcePath);
-
-		while (stack.length > 0) {
-			const
-				cur = stack.pop(),
-				curPath = this.resolve(sourcePath, cur);
-
-			if (cur.split(path.sep).at(-1) === target) {
-				return curPath;
-			}
-
-			if (this.isDirectory(curPath)) {
-				stack.push(...this.readdir(curPath).map((chunk) => `${cur}${path.sep}${chunk}`));
-			}
-		}
-
-		return undefined;
-	}
-
-	/**
 	 * Copies files and directories from the source to the destination
 	 *
 	 * @param {string} source
@@ -223,52 +188,44 @@ class VirtualFileSystem {
 	 * @returns {Promise<void>}
 	 */
 	copyDir(source, destination, options) {
-		return this.#copyDir(source, destination, options);
-	}
+		fs.copySync();
 
-	/**
-	 * Copies files and directories from the source to the destination
-	 *
-	 * @param {string} source
-	 * @param {string} destination
-	 * @param {CopyDirOptions} [options]
-	 * @param {string[]} [pathStack]
-	 *
-	 * @returns {Promise<void>}
-	 */
-	async #copyDir(source, destination, options = {}, pathStack = []) {
-		const
-			{onDataWrite, afterEachCopy, withFolders = true} = options;
+		return copy(source, destination, options);
 
-		const
-			curPath = this.resolve(source, ...pathStack),
-			isDirectory = this.isDirectory(curPath);
-
-		if (!isDirectory) {
+		async function copy(source, destination, options = {}, pathStack = []) {
 			const
-				fileData = this.readFile(curPath),
-				destPath = this.resolve(destination, ...pathStack);
+				{onDataWrite, afterEachCopy, withFolders = true} = options;
 
-			await this.ensureDir(this.resolve(destination, ...pathStack.slice(0, pathStack.length - 1)));
+			const
+				curPath = this.resolve(source, ...pathStack),
+				isDirectory = this.isDirectory(curPath);
 
-			this.writeFile(destPath, typeof onDataWrite === 'function' ? onDataWrite(fileData) : undefined);
+			if (!isDirectory) {
+				const
+					fileData = this.readFile(curPath),
+					destPath = this.resolve(destination, ...pathStack);
 
-			if (typeof afterEachCopy === 'function') {
-				afterEachCopy(destPath);
+				await this.ensureDir(this.resolve(destination, ...pathStack.slice(0, pathStack.length - 1)));
+
+				this.writeFile(destPath, typeof onDataWrite === 'function' ? onDataWrite(fileData) : undefined);
+
+				if (typeof afterEachCopy === 'function') {
+					afterEachCopy(destPath);
+				}
+
+				return;
 			}
 
-			return;
-		}
+			const
+				dir = this.readdir(curPath);
 
-		const
-			dir = this.readdir(curPath);
+			for (const file of dir) {
+				if (!withFolders && this.isDirectory(this.resolve(curPath, file))) {
+					continue;
+				}
 
-		for (const file of dir) {
-			if (!withFolders && this.isDirectory(this.resolve(curPath, file))) {
-				continue;
+				await this.copy(source, destination, options, [...pathStack, file]);
 			}
-
-			await this.#copyDir(source, destination, options, [...pathStack, file]);
 		}
 	}
 }

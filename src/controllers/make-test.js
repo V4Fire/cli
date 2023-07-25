@@ -29,9 +29,10 @@ class MakeTestController extends Controller {
 		if (this.config.target.split(path.sep).length === 1) {
 			const
 				chunk = this.config.subject === 'page' ? 'pages' : 'components',
-				name = this.resolveName(this.config.target, this.prefix);
+				name = this.resolveName(this.config.target, this.prefix),
+				globPattern = `${this.vfs.resolve('src', chunk)}/**/${name}`;
 
-			destination = this.vfs.findInDir(this.vfs.resolve('src', chunk), name);
+			destination = this.vfs.getFilesByGlobPattern(globPattern)[0];
 		}
 
 		await this.vfs.ensureDir(destination, 'test');
