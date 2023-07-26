@@ -1,0 +1,15 @@
+{{! name=[[name]] ext=ts }}
+/**
+ * [[include:components/{{name}}/README.md]]
+ * @packageDocumentation
+ */
+
+import iBlock, { component } from 'super/i-block/i-block';
+
+export * from 'super/i-block/i-block';
+
+/**
+ * {{#capitalize}}{{name}}{{/capitalize}}
+ */
+@component()
+export default class {{#camelize}}{{name}}{{/camelize}} extends iBlock {}

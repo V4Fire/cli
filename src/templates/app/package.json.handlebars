@@ -1,7 +1,8 @@
+{{! name=package ext=json }}
 {
-  "name": "b-name",
+  "name": "{{name}}",
   "version": "1.0.0",
-  "description": "Description b-name",
+  "description": "Description {{name}}",
   "scripts": {
     "build": "gulp build:tsconfig && webpack --watch --debug false",
     "start": "node webview.app",
@@ -9,7 +10,7 @@
   },
   "author": "@YourFullName",
   "keywords": [
-    "b-name"
+    "{{name}}"
   ],
   "dependencies": {
     "@v4fire/client": "^3.0.0-rc.59",

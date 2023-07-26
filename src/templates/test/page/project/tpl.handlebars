@@ -1,0 +1,7 @@
+import test from 'tests/config/project/test';
+
+test.describe('<{{name}}>', () => {
+	test('should be rendered', async ({ {{#capitalize}}{{name}}{{/capitalize}}, page }) => {
+		await test.expect(page.locator('.{{name}}')).toBeVisible();
+	});
+});
