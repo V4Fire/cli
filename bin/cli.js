@@ -13,6 +13,15 @@ const {Application} = require('../src/application');
 
 const options = yargs
 	.command(
+		'create-app [name]',
+		'Make simple application by basic template',
+		(yargs) => {
+			yargs.positional('name', {
+				type: 'string'
+			});
+		}
+	)
+	.command(
 		'make-test <subject> <target>',
 		'Make test for page or component',
 		(yargs) => {
@@ -68,13 +77,13 @@ const options = yargs
 
 	.command(
 		'make <subject> <name> [path]',
-		'Make block, page or app',
+		'Make block or page',
 		(yargs) => {
 			yargs
 				.positional('subject', {
 					default: 'block',
 					type: 'string',
-					choices: ['block', 'page', 'app']
+					choices: ['block', 'page']
 				})
 				.positional('name', {
 					demandOption: true,

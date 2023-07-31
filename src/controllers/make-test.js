@@ -3,7 +3,6 @@ const ts = require('typescript');
 
 const {Controller} = require('../core/controller');
 const {AbstractSyntaxTree} = require('../core/ast');
-const {camelize, ucfirst} = require('../core/helpers');
 
 class MakeTestController extends Controller {
 	/**
@@ -23,54 +22,27 @@ class MakeTestController extends Controller {
 			this.config.subject
 		);
 
-		let
-			destination = this.vfs.resolve(this.config.target);
+		const
+			name = this.resolveName(this.config.target, this.prefix),
+			clearName = this.resolveName(this.config.target, this.prefix, false);
 
-		if (this.config.target.split(path.sep).length === 1) {
+		let
+			destination = this.config.target;
+
+		if (destination.split(path.sep).length === 1) {
 			const
 				chunk = this.config.subject === 'page' ? 'pages' : 'components',
-				name = this.resolveName(this.config.target, this.prefix),
 				globPattern = `${this.vfs.resolve('src', chunk)}/**/${name}`;
 
 			destination = this.vfs.getFilesByGlobPattern(globPattern)[0];
 		}
 
-		await this.vfs.ensureDir(destination, 'test');
+		this.handlebarsOptions = {name, clearName};
+
 		destination = this.vfs.resolve(destination, 'test');
+		await this.vfs.ensureDir(destination, 'test');
 
-		await this.copyTestFolder(source, destination);
-	}
-
-	/**
-	 * Copies tests files from the source to the destination and fills templates
-	 *
-	 * @param {string} source
-	 * @param {string} destination
-	 *
-	 * @returns {Promise<void>}
-	 */
-	async copyTestFolder(source, destination) {
-		await this.vfs.ensureDir(destination);
-
-		const
-			clearName = destination.split(path.sep).at(-2).replace(RegExp(`${this.prefix}-`), '');
-
-		const
-			sourcePath = this.vfs.resolve(source),
-			destinationPath = this.vfs.resolve(destination);
-
-		await this.vfs.copyDir(
-			sourcePath,
-			destinationPath,
-			{
-				onDataWrite: (data) => this.replaceNames(
-					data,
-					[`${this.prefix}-name`, `${this.prefix}-${clearName}`],
-					['r-name', clearName]
-				),
-				afterEachCopy: (path) => this.log.msg(`Create: ${path}`)
-			}
-		);
+		await this.copyDir(source, destination, {withFolders: true});
 	}
 
 	/**
@@ -145,35 +117,6 @@ class MakeTestController extends Controller {
 
 		this.vfs.writeFile(sourcePath, newFile);
 		this.log.msg(`Update file: ${sourcePath}`);
-	}
-
-	/**
-	 * Replaces all occurrences of `defName` and `clearName` with `newName` and `clearNewName` with different typings
-	 *
-	 * @param {string} content
-	 * @param {[string, string]} defNameOptions
-	 * @param {[string, string]} clearNameOptions
-	 *
-	 * @returns {string}
-	 */
-	replaceNames(
-		content,
-		[defName, newName],
-		[clearName, newClearName]
-	) {
-		return content
-			.replace(
-				RegExp(`${defName}|${clearName}`, 'g'),
-				(target) => target === defName ? newName : newClearName
-			)
-			.replace(
-				RegExp(`${camelize(defName)}|${camelize(clearName)}`, 'g'),
-				(target) => target === camelize(defName) ? camelize(newName) : camelize(newClearName)
-			)
-			.replace(
-				RegExp(`${ucfirst(camelize(defName))}|${ucfirst(camelize(clearName))}`, 'g'),
-				(target) => target === ucfirst(camelize(defName)) ? ucfirst(camelize(newName)) : ucfirst(camelize(newClearName))
-			);
 	}
 
 	/** @override */

@@ -1,3 +1,5 @@
+const path = require('path');
+const {getOutputFileInfo, Handlebars} = require('./handlebars');
 const {camelize, ucfirst, gitUser} = require('./helpers');
 
 /**
@@ -18,6 +20,11 @@ class Controller {
 	 * @type {./log/Logger}
 	 */
 	log;
+
+	/**
+	 * @type {Dictionary}
+	 */
+	handlebarsOptions;
 
 	/**
 	 * Prefix for a current subject
@@ -42,10 +49,22 @@ class Controller {
 	/**
 	 * @param {string} name
 	 * @param {string} [prefix]
+	 * @param {boolean} [withPrefix]
 	 * @returns {string}
 	 */
-	resolveName(name, prefix = 'b') {
-		return /^[bp]-/.test(name) ? name : `${prefix}-${name}`;
+	resolveName(name, prefix = 'b', withPrefix = true) {
+		let
+			localName = name;
+
+		if (name.split(path.sep).length <= 1) {
+			localName = name.split(path.sep).at(-1);
+		}
+
+		if (withPrefix) {
+			return /^[bp]-/.test(localName) ? localName : `${prefix}-${localName}`;
+		}
+
+		return localName;
 	}
 
 	/**
@@ -85,6 +104,86 @@ class Controller {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Copies directory
+	 *
+	 * @param {string} source
+	 * @param {string} destination
+	 * @param {CopyDirOptions} options
+	 * @returns {Promise<void>}
+	 */
+	copyDir(source, destination, options) {
+		return this.copy(source, destination, options);
+	}
+
+	/**
+	 * Copies and resolves handlebars template
+	 *
+	 * @param {string} sourceFile
+	 * @param {string} destinationFolder
+	 * @returns {Promise<void>}
+	 */
+	async copyTemplate(sourceFile, destinationFolder) {
+		let
+			{outputName, ext} = await getOutputFileInfo(sourceFile);
+
+		if (outputName === '[[name]]' || outputName == null) {
+			outputName = this.handlebarsOptions.name;
+		}
+
+		this.vfs.writeFile(
+			`${destinationFolder}${path.sep}${outputName}.${ext}`,
+			Handlebars.compile(this.vfs.readFile(sourceFile))(this.handlebarsOptions)
+		);
+	}
+
+	/**
+	 * Copies directory
+	 *
+	 * @param {string} source
+	 * @param {string} destination
+	 * @param {CopyDirOptions} options
+	 * @param {string[]} pathStack
+	 * @returns {Promise<void>}
+	 */
+	async copy(source, destination, options = {}, pathStack = []) {
+		const
+			{withFolders = true} = options;
+
+		const
+			curSource = this.vfs.resolve(source, ...pathStack),
+			isDirectory = this.vfs.isDirectory(curSource);
+
+		if (isDirectory) {
+			for (const file of this.vfs.readdir(curSource)) {
+				if (!withFolders && this.vfs.isDirectory(this.vfs.resolve(curSource, file))) {
+					continue;
+				}
+
+				await this.copy(source, destination, options, [...pathStack, file]);
+			}
+
+			return;
+		}
+
+		const
+			curDestinationFolder = this.vfs.resolve(destination, ...pathStack.slice(0, pathStack.length - 1));
+
+		await this.vfs.ensureDir(curDestinationFolder);
+
+		if (this.vfs.extname(pathStack.at(-1)) === '.handlebars') {
+			console.log('copyTemplate', curSource);
+			await this.copyTemplate(curSource, curDestinationFolder);
+			return;
+		}
+
+		console.log('copyFile', curSource);
+		this.vfs.writeFile(
+			this.vfs.resolve(destination, ...pathStack),
+			this.vfs.readFile(curSource)
+		);
 	}
 }
 

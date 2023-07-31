@@ -5,7 +5,7 @@ interface IConfig {
 	path: string;
 	name: string;
 	newName?: string;
-	subject: 'block' | 'page' | 'app' | 'test';
+	subject: 'block' | 'page';
 	command?: 'make' | 'rename';
 	_: [this['command']];
 	reporter: 'json' | 'raw' | 'silent';
@@ -15,7 +15,5 @@ interface IConfig {
 }
 
 interface CopyDirOptions {
-	afterEachCopy?(destPath: string): unknown;
-	onDataWrite?(data: string): string | object;
 	withFolders?: boolean;
 }
