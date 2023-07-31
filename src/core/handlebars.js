@@ -1,5 +1,7 @@
 /* eslint-disable func-names */
 const {camelize, ucfirst} = require('./helpers');
+const readline = require('readline');
+const fs = require('fs');
 const Handlebars = require('handlebars');
 
 module.exports.getOutputFileInfo = getOutputFileInfo;
@@ -29,7 +31,7 @@ function getOutputFileInfo(path) {
 	rl.once('line', (line) => {
     try {
       const
-        {name} = /^{{!.*(name=(?<name>[A-Za-z.\-_]+?)[^A-Za-z.].*}}$)/g.exec(line).groups,
+        {name} = /^{{!.*(name=(?<name>[[\]A-Za-z.\-_]+?)[^A-Za-z.[\]].*}}$)/g.exec(line).groups,
         {ext} = /^{{!.*(extension|ext=(?<ext>[A-Za-z.]+?)[^A-Za-z.].*}}$)/g.exec(line).groups;
 
       resolve({name, ext});
