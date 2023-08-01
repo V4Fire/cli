@@ -8,15 +8,20 @@ v4fire -h
 
 ## Usage
 
-### Make app
+### Create app
 
 It is the easiest way to start use V4Fire
 
 ```bash
-v4fire make app my-app && cd my-app && npm run build
+v4fire create-app my-app && yarn build
 ```
 
-It will create application ready for work.
+It will create application ready for work in the current directory.
+
+```bash
+v4fire create-app my-app/foo/bar && cd my-app/foo/bar && yarn build
+```
+It will create application ready for work in the target directory.
 
 ### Create a workspace
 
