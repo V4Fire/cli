@@ -1,5 +1,3 @@
-require('../core/handlebars');
-
 class MakeController extends Controller {
 	resolvedName;
 

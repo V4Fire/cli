@@ -13,10 +13,10 @@ const {Application} = require('../src/application');
 
 const options = yargs
 	.command(
-		'create-app [name]',
-		'Make simple application by basic template',
+		'create-app [target]',
+		'Make simple application using basic v4fire template',
 		(yargs) => {
-			yargs.positional('name', {
+			yargs.positional('target', {
 				type: 'string'
 			});
 		}

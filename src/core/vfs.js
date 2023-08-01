@@ -177,57 +177,6 @@ class VirtualFileSystem {
 	getFilesByGlobPattern(pattern) {
 		return glob.sync(pattern);
 	}
-
-	/**
-	 * Copies files and directories from the source to the destination
-	 *
-	 * @param {string} source
-	 * @param {string} destination
-	 * @param {CopyDirOptions} [options]
-	 *
-	 * @returns {Promise<void>}
-	 */
-	copyDir(source, destination, options) {
-		fs.copySync();
-
-		return copy(source, destination, options);
-
-		async function copy(source, destination, options = {}, pathStack = []) {
-			const
-				{onDataWrite, afterEachCopy, withFolders = true} = options;
-
-			const
-				curPath = this.resolve(source, ...pathStack),
-				isDirectory = this.isDirectory(curPath);
-
-			if (!isDirectory) {
-				const
-					fileData = this.readFile(curPath),
-					destPath = this.resolve(destination, ...pathStack);
-
-				await this.ensureDir(this.resolve(destination, ...pathStack.slice(0, pathStack.length - 1)));
-
-				this.writeFile(destPath, typeof onDataWrite === 'function' ? onDataWrite(fileData) : undefined);
-
-				if (typeof afterEachCopy === 'function') {
-					afterEachCopy(destPath);
-				}
-
-				return;
-			}
-
-			const
-				dir = this.readdir(curPath);
-
-			for (const file of dir) {
-				if (!withFolders && this.isDirectory(this.resolve(curPath, file))) {
-					continue;
-				}
-
-				await this.copy(source, destination, options, [...pathStack, file]);
-			}
-		}
-	}
 }
 
 exports.VirtualFileSystem = VirtualFileSystem;

@@ -6,16 +6,14 @@ class CreateAppController extends Controller {
 	async run() {
 		const
 			source = this.vfs.resolve(__dirname, '../templates/app'),
-			appName = this.config.name || 'v4fire-app',
-			appPath = appName.split(path.sep);
+			appName = this.config.target || 'v4fire-app',
+			appPath = appName.split(path.sep),
+			directoryExists = this.vfs.exists(this.config.target) && this.vfs.isDirectory(this.config.target);
 
 		let
 			destination = './';
 
-		if (
-			appPath.length > 1 ||
-			(appPath.length <= 1 && (!this.vfs.exists(this.config.name) || !this.vfs.isDirectory(this.config.name)))
-		) {
+		if (appPath.length <= 1 && !directoryExists) {
 			this.vfs.resolve('./');
 
 		} else {

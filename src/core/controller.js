@@ -68,6 +68,18 @@ class Controller {
 	}
 
 	/**
+	 * Copies directory
+	 *
+	 * @param {string} source
+	 * @param {string} destination
+	 * @param {CopyDirOptions} options
+	 * @returns {Promise<void>}
+	 */
+	copyDir(source, destination, options) {
+		return this.copy(source, destination, options);
+	}
+
+	/**
 	 * Rename all names to target name
 	 *
 	 * @param {string} content
@@ -107,23 +119,12 @@ class Controller {
 	}
 
 	/**
-	 * Copies directory
-	 *
-	 * @param {string} source
-	 * @param {string} destination
-	 * @param {CopyDirOptions} options
-	 * @returns {Promise<void>}
-	 */
-	copyDir(source, destination, options) {
-		return this.copy(source, destination, options);
-	}
-
-	/**
 	 * Copies and resolves handlebars template
 	 *
 	 * @param {string} sourceFile
 	 * @param {string} destinationFolder
 	 * @returns {Promise<void>}
+	 * @protected
 	 */
 	async copyTemplate(sourceFile, destinationFolder) {
 		let
@@ -147,6 +148,7 @@ class Controller {
 	 * @param {CopyDirOptions} options
 	 * @param {string[]} pathStack
 	 * @returns {Promise<void>}
+	 * @protected
 	 */
 	async copy(source, destination, options = {}, pathStack = []) {
 		const
