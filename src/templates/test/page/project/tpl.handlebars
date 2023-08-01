@@ -1,8 +1,8 @@
-{{! output_name=foo; extension=ts; }}
+{{! output_name=main; extension=ts; }}
 import test from 'tests/config/project/test';
 
 test.describe('<{{name}}>', () => {
-	test('should be rendered', async ({ {{#capitalize}}{{name}}{{/capitalize}}, page }) => {
+	test('should be rendered', async ({ {{#camelize}}{{name}}{{/camelize}}, page }) => {
 		await test.expect(page.locator('.{{name}}')).toBeVisible();
 	});
 });

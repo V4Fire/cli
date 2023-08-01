@@ -53,18 +53,14 @@ class Controller {
 	 * @returns {string}
 	 */
 	resolveName(name, prefix = 'b', withPrefix = true) {
-		let
-			localName = name;
-
-		if (name.split(path.sep).length <= 1) {
-			localName = name.split(path.sep).at(-1);
-		}
+		const
+			localName = name.split(path.sep).length === 1 ? name : name.split(path.sep).at(-1);
 
 		if (withPrefix) {
 			return /^[bp]-/.test(localName) ? localName : `${prefix}-${localName}`;
 		}
 
-		return localName;
+		return name.split(path.sep).at(-1).replace(/^[bp]-/g, '');
 	}
 
 	/**

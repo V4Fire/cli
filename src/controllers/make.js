@@ -1,3 +1,5 @@
+const {Controller} = require('../core/controller');
+
 class MakeController extends Controller {
 	resolvedName;
 
