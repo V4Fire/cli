@@ -122,7 +122,7 @@ class Controller {
 	 * @returns {Promise<void>}
 	 * @protected
 	 */
-	async copyTemplate(sourceFile, destinationFolder) {
+	async resolveTemplate(sourceFile, destinationFolder) {
 		let
 			{outputName, ext} = await getOutputFileInfo(sourceFile);
 
@@ -167,17 +167,16 @@ class Controller {
 		}
 
 		const
-			curDestinationFolder = this.vfs.resolve(destination, ...pathStack.slice(0, pathStack.length - 1));
+			curDestinationFolder = this.vfs.resolve(destination, ...pathStack.slice(0, pathStack.length - 1)),
+			extname = this.vfs.extname(pathStack.at(-1));
 
 		await this.vfs.ensureDir(curDestinationFolder);
 
-		if (this.vfs.extname(pathStack.at(-1)) === '.handlebars') {
-			console.log('copyTemplate', curSource);
-			await this.copyTemplate(curSource, curDestinationFolder);
+		if (extname === '.handlebars' || extname === '.hbs') {
+			await this.resolveTemplate(curSource, curDestinationFolder);
 			return;
 		}
 
-		console.log('copyFile', curSource);
 		this.vfs.writeFile(
 			this.vfs.resolve(destination, ...pathStack),
 			this.vfs.readFile(curSource)

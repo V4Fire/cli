@@ -1,9 +1,7 @@
 /* eslint-disable func-names */
-const fs = require('fs');
-const readline = require('readline');
 const Handlebars = require('handlebars');
 
-const {camelize, ucfirst} = require('./helpers');
+const {camelize, ucfirst, readFirstLine} = require('./helpers');
 
 /**
  * Camelize string
@@ -34,34 +32,23 @@ Handlebars.registerHelper('wrapInCodeBlock', function (options) {
  * @param {string} path
  * @returns {Promise<{ext: string; outputName?: string}>}
  */
-function getOutputFileInfo(path) {
-  const rl = readline.createInterface({
-    input: fs.createReadStream(path)
-  });
+async function getOutputFileInfo(path) {
+  const
+    line = await readFirstLine(path),
+    opts = line.split(/\s/);
 
-  let
-    resolve,
-    reject;
+  opts.pop();
+  opts.shift();
 
-  const res = new Promise((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
+  return opts.reduce((acc, el) => {
+    const
+      tuple = el.split('=');
 
-  rl.once('line', (line) => {
-    try {
-      const
-        outputName = /^{{!.*(output_name=(?<name>[A-Za-z[\].\-_]+?)[^A-Za-z[\].\-_].*}}$)/g.exec(line).groups.name,
-        {ext} = /^{{!.*((extension|ext)=(?<ext>[A-Za-z.]+?)[^A-Za-z.].*}}$)/g.exec(line).groups;
-
-      resolve({outputName, ext});
-
-    } catch (error) {
-      reject(error);
-    }
-  });
-
-  return res;
+    return {
+      ...acc,
+      [tuple[0]]: tuple[1]
+    };
+  }, {});
 }
 
 module.exports.Handlebars = Handlebars;

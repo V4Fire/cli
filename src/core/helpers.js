@@ -1,3 +1,8 @@
+const fs = require('fs');
+const readline = require('readline');
+const gitconfig = require('git-config-path');
+const parse = require('parse-git-config');
+
 /**
  * Camelize string
  * @param {string} str
@@ -10,9 +15,6 @@ exports.camelize = (str) =>
  * @param {string} str
  */
 exports.ucfirst = (str) => str[0].toUpperCase() + str.substr(1);
-
-const gitconfig = require('git-config-path'),
-	parse = require('parse-git-config');
 
 /**
  * Current user name
@@ -36,3 +38,31 @@ exports.gitUser = (() => {
 		email: config.user.name || config.user.email || defaultUser.email
 	};
 })();
+
+/**
+ * Read the first line from the file
+ * @param {string} path
+ */
+exports.readFirstLine = (path) => {
+  const rl = readline.createInterface({
+    input: fs.createReadStream(path)
+  });
+
+  let
+    resolve,
+    reject;
+
+	const res = new Promise((res, rej) => {
+		resolve = res;
+		reject = rej;
+	});
+
+	try {
+		rl.once('line', (line) => resolve(line));
+
+	} catch (error) {
+		reject(error);
+	}
+
+	return res;
+};
