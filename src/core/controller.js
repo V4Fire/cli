@@ -155,14 +155,18 @@ class Controller {
 			isDirectory = this.vfs.isDirectory(curSource);
 
 		if (isDirectory) {
+			const
+				promises = [];
+
 			for (const file of this.vfs.readdir(curSource)) {
 				if (!withFolders && this.vfs.isDirectory(this.vfs.resolve(curSource, file))) {
 					continue;
 				}
 
-				await this.copy(source, destination, options, [...pathStack, file]);
+				promises.push(this.copy(source, destination, options, [...pathStack, file]));
 			}
 
+			await Promise.all(promises);
 			return;
 		}
 

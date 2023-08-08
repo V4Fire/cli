@@ -32,7 +32,7 @@ class Application {
 			const
 				{commandNative: command, subject} = this.config;
 
-			this.log.info(`Command:${command} ${subject}`);
+			this.log.info(`Command: ${command} ${subject}`);
 
 			const controller = this.getControllerInstance(
 					`${ucfirst(camelize(`${command}-${subject}`))}Controller`
