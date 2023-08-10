@@ -8,15 +8,20 @@ v4fire -h
 
 ## Usage
 
-### Make app
+### Create app
 
 It is the easiest way to start use V4Fire
 
 ```bash
-v4fire make app my-app && cd my-app && npm run build
+v4fire create-app my-app && yarn build
 ```
 
-It will create application ready for work.
+It will create application ready for work in the current directory.
+
+```bash
+v4fire create-app my-app/foo/bar && cd my-app/foo/bar && yarn build
+```
+It will create application ready for work in the target directory.
 
 ### Create a workspace
 
@@ -45,13 +50,13 @@ It will remove workspace folder, clear package-lock.json and components-lock.jso
 v4fire make block hello-world
 ```
 
-It will create `src/base/b-hello-world` component.
+It will create `src/components/b-hello-world` component.
 
 ```bash
 v4fire make block b-hello-world
 ```
 
-Also, it will create `src/base/b-hello-world`.
+Also, it will create `src/components/b-hello-world`.
 
 ```bash
 v4fire make page hello-world
@@ -84,7 +89,7 @@ v4fire make block hello-world  --template functional --extend i-data
 v4fire rename hello-world app-loader
 ```
 
-It will rename `src/base/b-hello-world` to `src/base/b-app-loader`.
+It will rename `src/components/b-hello-world` to `src/components/b-app-loader`.
 
 ### Resolve changelog
 
@@ -98,18 +103,28 @@ WARNING: Conflicts within the same record may not be resolved correctly!
 ### Make test
 
 ```bash
-v4fire make-test src/base/b-slider
+v4fire make-test block hello-world
 ```
+It will generate simple tests for the `src/components/**/b-hello-world` component, if it exists.
 
-You can generate test files for both component and module.
+```bash
+v4fire make-test page slider
+```
+It will generate simple tests for the `src/pages/**/p-slider` page, if it exists.
+
+```bash
+v4fire make-test block src/foo/bar/componentName
+```
+It will generate simple `component` tests in the `src/foo/bar/componentName` folder
+
+```bash
+v4fire make-test page src/foo/bar/componentName
+```
+It will generate simple `page` tests in the `src/foo/bar/componentName` folder
+
 The tool also will take care of updating [demo-page](https://github.com/V4Fire/Client/blob/master/src/pages/p-v4-components-demo/index.js)
-dependencies and adding new test cases to [test cases file](https://github.com/V4Fire/Client/blob/master/tests/cases.js).
 
-For both component and module the tool generates `test/index.js` [file](src/templates/test/module/simple/index.js)
-that performs basic test setup and executes simple test.
-
-In case of _module_ test, the tool relies on `b-dummy` [component](https://github.com/V4Fire/Client/tree/master/src/base/b-dummy)
-designed specifically for testing purposes.
+The tool generates a `test` folder for both components and pages. The [template for component](src/templates/test/block) and the [template for page](src/templates/test/block) contain the basic test setup and can execute these simple tests.
 
 #### Runners
 
@@ -118,7 +133,7 @@ and all test code locates in the `test/index.js` file. So if you'd like to have 
 you can specify them just after the path to module or component being tested.
 
 ```bash
-v4fire make-test src/base/b-slider analytics render events
+v4fire make-test src/components/b-slider analytics render events
 ```
 
 For each specified runner the tool will create `test/runner/runner-name` file. [Here is the example](src/templates/test/module/with-runners/runners/runner.js)

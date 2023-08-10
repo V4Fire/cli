@@ -1,15 +1,23 @@
 const {Controller} = require('../core/controller');
 
 class MakeController extends Controller {
-	async run() {
-		const prefix = this.config.subject === 'block' ? 'b' : 'p',
-			name = this.resolveName(this.config.name, prefix);
+	resolvedName;
 
-		const source = this.vfs.resolve(__dirname, '../templates/component'),
+	/** @override */
+	async run() {
+		const
+			name = this.resolveName(this.config.name, this.prefix),
+			source = this.vfs.resolve(__dirname, '../templates/component'),
+			secondarySource = this.vfs.resolve(__dirname, '../templates/component', this.config.template),
 			destination = this.vfs.resolve(this.config.path, name);
 
+		this.handlebarsOptions = {name, clearName: this.config.name};
+
+		await this.vfs.ensureDir(secondarySource);
 		await this.vfs.ensureDir(destination);
-		this.copyFolder(source, destination, name);
+
+		await this.copyDir(source, destination, {withFolders: false});
+		await this.copyDir(secondarySource, destination, {withFolders: true});
 	}
 }
 

@@ -1,0 +1,34 @@
+{{! outputName=main ext=ts }}
+import type { JSHandle } from 'playwright';
+
+import test from 'tests/config/unit/test';
+import Component from 'tests/helpers/component';
+
+import type {{#camelize}}{{name}}{{/camelize}} from 'src/components/{{name}}/{{name}}.ts';
+
+test.describe('<{{name}}>', () => {
+	const scheme = [
+		{
+			attrs: {
+				id: '{{name}}-component'
+			}
+		}
+	];
+
+	let
+		node: JSHandle<unknown>,
+		component: JSHandle<{{#camelize}}{{name}}{{/camelize}}>;
+
+	test.beforeEach(async ({ demoPage, page }) => {
+		await demoPage.goto();
+		await Component.createComponent(page, '{{name}}', scheme);
+	});
+
+	test('should be rendered', async ({ page }) => {
+		const
+			component = await Component.getComponentByQuery(page, '#{{name}}-component'),
+			componentName = await component.getProperty('componentName');
+
+		await test.expect(componentName.jsonValue()).resolves.toBe('{{name}}');
+	});
+});

@@ -3,7 +3,6 @@ const ts = require('typescript');
 
 const {Controller} = require('../core/controller');
 const {AbstractSyntaxTree} = require('../core/ast');
-const {camelize, ucfirst} = require('../core/helpers');
 
 class MakeTestController extends Controller {
 	/**
@@ -11,14 +10,8 @@ class MakeTestController extends Controller {
 	 */
 	ast;
 
-	/**
-	 * Default name of component for module testing
-	 * @type {string}
-	 */
-	defaultComponentName = 'b-dummy';
-
+	/** @override */
 	async run() {
-		this.updateCases(this.config.runners);
 		this.updateDemoPageDeps();
 
 		const source = this.vfs.resolve(
@@ -26,154 +19,30 @@ class MakeTestController extends Controller {
 			'..',
 			'templates',
 			'test',
-			this.component === this.moduleOrComponentName ? 'component' : 'module',
-			this.config.runners.length === 0 ? 'simple' : 'with-runners'
+			this.config.subject
 		);
 
-		const destination = this.vfs.resolve(this.config.path, 'test');
+		const
+			name = this.resolveName(this.config.target, this.prefix),
+			clearName = this.resolveName(this.config.target, this.prefix, false);
 
-		await this.copyTestFolder(source, destination);
-	}
+		let
+			destination = this.config.target;
 
-	/**
-	 * Name of component tests being generated for
-	 * @returns {string}
-	 */
-	get component() {
-		const dirName = this.config.path.split(path.sep).pop();
+		if (destination.split(path.sep).length === 1) {
+			const
+				chunk = this.config.subject === 'page' ? 'pages' : 'components',
+				globPattern = `${this.vfs.resolve('src', chunk)}/**/${name}`;
 
-		if (/^b-/.test(dirName)) {
-			return dirName;
+			destination = this.vfs.getFilesByGlobPattern(globPattern)[0];
 		}
 
-		return this.defaultComponentName;
-	}
+		this.handlebarsOptions = {name, clearName};
 
-	/**
-	 * Name of component or module for generating tests
-	 * @returns {string}
-	 */
-	get moduleOrComponentName() {
-		if (this.component !== this.defaultComponentName) {
-			return this.component;
-		}
+		destination = this.vfs.resolve(destination, 'test');
+		await this.vfs.ensureDir(destination, 'test');
 
-		return this.config.path.split(path.sep).pop();
-	}
-
-	/**
-	 * Copies test folder from source to destination with replacing component/module names
-	 *
-	 * @param source
-	 * @param destination
-	 *
-	 * @returns {Promise<void>}
-	 */
-	async copyTestFolder(source, destination) {
-		await this.vfs.ensureDir(destination);
-
-		const defName =
-			this.moduleOrComponentName === this.component ? 'b-name' : 'name';
-
-		const indexFileSource = this.vfs.resolve(source, 'index.js'),
-			indexFileDestination = this.vfs.resolve(destination, 'index.js'),
-			indexFileData = this.vfs.readFile(indexFileSource);
-
-		this.vfs.writeFile(
-			indexFileDestination,
-			this.replaceNames(indexFileData, this.moduleOrComponentName, defName)
-		);
-
-		this.log.msg(`New file: ${indexFileDestination}`);
-
-		const {runners} = this.config;
-
-		if (runners.length === 0) {
-			return;
-		}
-
-		const runnersSource = this.vfs.resolve(source, 'runners', 'runner.js'),
-			runnersDestination = this.vfs.resolve(destination, 'runners'),
-			runnerData = this.vfs.readFile(runnersSource);
-
-		await this.vfs.ensureDir(runnersDestination);
-
-		runners.forEach((runner) => {
-			const runnerFileDestination = this.vfs.resolve(
-				runnersDestination,
-				`${runner}.js`
-			);
-
-			this.vfs.writeFile(
-				runnerFileDestination,
-				this.replaceNames(
-					runnerData,
-					this.moduleOrComponentName,
-					defName,
-					runner
-				)
-			);
-
-			this.log.msg(`New file: ${runnerFileDestination}`);
-		});
-	}
-
-	/**
-	 * Updates `cases.js` by adding new cases for generated tests
-	 * @param {string[]} runners
-	 */
-	updateCases(runners) {
-		const sourcePath = this.vfs.resolve('tests/cases.js');
-
-		if (!this.vfs.exists(sourcePath)) {
-			this.log.error(
-				`File ${sourcePath} does not exist.\nCreate it and write a basic structure of it in order to generate cases.`
-			);
-
-			return;
-		}
-
-		const source = this.ast.createSourceFile(sourcePath);
-
-		const commentString = `// ${this.moduleOrComponentName}`,
-			testEntryPath = this.vfs.pathByRoot(
-				this.vfs.resolve(this.config.path, 'test')
-			);
-
-		const caseStrings = [];
-
-		if (runners.length === 0) {
-			caseStrings.push(
-				`\n\t'--test-entry ${this.vfs.removeTrailingSep(testEntryPath)}'`
-			);
-		} else {
-			runners.forEach((runner) => {
-				caseStrings.push(
-					`\n\t'--test-entry ${this.vfs.removeTrailingSep(
-						testEntryPath
-					)} --runner ${runner}'`
-				);
-			});
-		}
-
-		const casesNodeObject = this.ast.findASTNodeObject(
-				source,
-				(node) => ts.SyntaxKind[node.kind] === 'ArrayLiteralExpression'
-			),
-			cases = casesNodeObject.elements,
-			insertPosition = cases.end;
-
-		const sourceFile = this.vfs.readFile(sourcePath);
-
-		const newFile = `${sourceFile.slice(
-			0,
-			insertPosition
-		)},\n\n\t${commentString}${caseStrings.join(',')}${sourceFile.slice(
-			insertPosition
-		)}`;
-
-		this.vfs.writeFile(sourcePath, newFile);
-		this.log.msg(`Update file: ${sourcePath}`);
+		await this.copyDir(source, destination, {withFolders: true});
 	}
 
 	/**
@@ -248,32 +117,6 @@ class MakeTestController extends Controller {
 
 		this.vfs.writeFile(sourcePath, newFile);
 		this.log.msg(`Update file: ${sourcePath}`);
-	}
-
-	/**
-	 * Replaces all occurrences of `defName` with `newName` with different typings
-	 *
-	 * @param {string} content
-	 * @param {string} newName
-	 * @param {string} defName
-	 * @param {string | undefined} runner
-	 *
-	 * @returns {string}
-	 */
-	replaceNames(content, newName, defName = 'b-name', runner = undefined) {
-		const result = content
-			.replace(RegExp(defName, 'g'), newName)
-			.replace(RegExp(camelize(defName), 'g'), camelize(newName))
-			.replace(
-				RegExp(ucfirst(camelize(defName)), 'g'),
-				ucfirst(camelize(newName))
-			);
-
-		if (runner != null) {
-			return result.replace(/runner/g, runner);
-		}
-
-		return result;
 	}
 
 	/** @override */

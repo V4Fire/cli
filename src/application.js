@@ -29,18 +29,18 @@ class Application {
 
 	async run() {
 		try {
-			const {command, subject} = this.config;
+			const
+				{commandNative: command, subject} = this.config;
 
-			this.log.info(`Command:${command} ${subject}`);
+			this.log.info(`Command: ${command} ${subject}`);
 
-			const controller =
-				this.getControllerInstance(
+			const controller = this.getControllerInstance(
 					`${ucfirst(camelize(`${command}-${subject}`))}Controller`
 				) ||
 				this.getControllerInstance(`${ucfirst(camelize(command))}Controller`);
 
 			if (controller == null) {
-				throw new Error(`Unknown controller: ${controllerName}`);
+				throw new Error('Unknown controller');
 			}
 
 			await controller.run();

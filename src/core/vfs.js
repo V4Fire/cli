@@ -107,6 +107,15 @@ class VirtualFileSystem {
 	}
 
 	/**
+	 * Copy directory
+	 *
+	 * @param {string} filepath
+	 */
+	copyDir(filepath) {
+		return fs.cpSync()
+	}
+
+	/**
 	 * Remove directory
 	 *
 	 * @param {string} filepath

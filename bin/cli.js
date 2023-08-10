@@ -13,15 +13,25 @@ const {Application} = require('../src/application');
 
 const options = yargs
 	.command(
-		'make-test <path> [runners..]',
-		'Make test for module or component',
+		'create-app [target]',
+		'Make simple application using basic v4fire template',
+		(yargs) => {
+			yargs.positional('target', {
+				type: 'string'
+			});
+		}
+	)
+	.command(
+		'make-test <subject> <target>',
+		'Make test for page or component',
 		(yargs) => {
 			yargs
-				.positional('path', {
-					demandOption: true,
-					type: 'string'
+				.positional('subject', {
+					type: 'string',
+					choices: ['page', 'block']
 				})
-				.positional('runners', {
+				.positional('target', {
+					demandOption: true,
 					type: 'string'
 				});
 		}
@@ -67,13 +77,13 @@ const options = yargs
 
 	.command(
 		'make <subject> <name> [path]',
-		'Make block, page or app',
+		'Make block or page',
 		(yargs) => {
 			yargs
 				.positional('subject', {
 					default: 'block',
 					type: 'string',
-					choices: ['block', 'page', 'app']
+					choices: ['block', 'page']
 				})
 				.positional('name', {
 					demandOption: true,
@@ -148,16 +158,12 @@ const options = yargs
 	.example('v4fire make block point', 'Make i-block b-point')
 	.example('v4fire make page card', 'Make i-dynamic-page p-card')
 	.example(
-		'v4fire make-test src/core/view-history',
-		'Make tests for view-history module'
+		'v4fire make-test block slider',
+		'Make tests for src/components/**/b-slider component, if it exists'
 	)
 	.example(
-		'v4fire make-test src/base/b-slider',
-		'Make tests for b-slider component'
-	)
-	.example(
-		'v4fire make-test src/base/b-slider analytics render events',
-		'Make tests for b-slider component with different runners'
+		'v4fire make-test page src/foo/bar/p-test',
+		'Make tests for src/foo/bar/p-test page'
 	)
 	.example(
 		'v4fire resolve-changelog',

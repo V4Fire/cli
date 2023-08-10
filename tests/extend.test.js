@@ -13,12 +13,12 @@ describe('Change extend option', () => {
 
 			await app.run();
 
-			expect(app.vfs.exists('./src/base/b-test/b-test.ss')).is.true;
-			expect(app.vfs.readFile('./src/base/b-test/b-test.ts')).contains(
+			expect(app.vfs.exists('./src/components/b-test/b-test.ss')).is.true;
+			expect(app.vfs.readFile('./src/components/b-test/b-test.ts')).contains(
 				'i-data/i-data'
 			);
 
-			expect(app.vfs.readFile('./src/base/b-test/b-test.ts')).contains(
+			expect(app.vfs.readFile('./src/components/b-test/b-test.ts')).contains(
 				'extends iData'
 			);
 		});
