@@ -27,7 +27,7 @@ Handlebars.registerHelper('wrapInCodeBlock', function (options) {
 });
 
 /**
- * Reads the handlebars template that returns output file info
+ * Reads the template that returns output file info
  * The first line of the template contains information about the file name and extension
  * The format looks like this: {{! name=index ext=ts }}
  * Tt will be parsed into this: {name: 'index', ext: 'ts'}
@@ -38,10 +38,7 @@ Handlebars.registerHelper('wrapInCodeBlock', function (options) {
 async function getOutputFileInfo(path) {
   const
     line = await readFirstLine(path),
-    opts = line.split(/\s/);
-
-  opts.pop();
-  opts.shift();
+    opts = line.slice(4, -3).trim().split(/\s+/);
 
   return opts.reduce((acc, el) => {
     const

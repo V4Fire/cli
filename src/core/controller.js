@@ -115,7 +115,7 @@ class Controller {
 	}
 
 	/**
-	 * Copies and resolves handlebars template
+	 * Copies and resolves template
 	 *
 	 * @param {string} sourceFile
 	 * @param {string} destinationFolder
