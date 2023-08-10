@@ -11,6 +11,26 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v2.0.0 (2023-08-10)
+
+#### :boom: [Breaking Change]
+
+* `make-test` - the command interface has been changed
+* `make` - support for the `make app` has been removed
+
+#### :rocket: [New Feature]
+
+* `create-app` - the function has been added for the easy creation of v4fire app
+
+#### :house: Internal
+
+* Moved to using Handlebars templates
+
+#### :memo: [Documentation]
+
+* `help` - documentation has been updated
+* README.md has been updated
+
 ## v1.5.2 (2023-04-14)
 
 #### :bug: Bug Fix
