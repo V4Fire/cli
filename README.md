@@ -6,9 +6,19 @@ Tools for creating V4Fire blocks and pages from CLI
 v4fire -h
 ```
 
+## API
+- [`create-app`](#create-app)
+- [`create-workspace`](#create-workspace)
+- [`remove-workspace`](#remove-workspace)
+- [`make block|page`](#make)
+- [`rename-component`](#rename-component)
+- [`resolve-changelog`](#resolve-changelog)
+- [`make-test`](#make-test)
+- [`ai-buddy`](#ai-buddy)
+
 ## Usage
 
-### Create app
+### <a id="create-app"></a>Create app
 
 It is the easiest way to start use V4Fire
 
@@ -23,7 +33,7 @@ v4fire create-app my-app/foo/bar && cd my-app/foo/bar && yarn build
 ```
 It will create application ready for work in the target directory.
 
-### Create a workspace
+### <a id="create-workspace"></a>Create a workspace
 
 ```bash
 v4fire create-workspace
@@ -36,7 +46,7 @@ Also, you can specify custom dependencies to install to the workspace or change 
 v4fire create-workspace --package my-package --root my-workspace
 ```
 
-### Remove a workspace
+### <a id="remove-workspace"></a>Remove a workspace
 
 ```bash
 v4fire remove-workspace
@@ -44,7 +54,7 @@ v4fire remove-workspace
 
 It will remove workspace folder, clear package-lock.json and components-lock.json, reinstall dependencies
 
-### Make block/page
+### <a id="make"></a>Make block/page
 
 ```bash
 v4fire make block hello-world
@@ -83,7 +93,7 @@ Also, you can change parent for component. Possible options: `default`, `i-block
 v4fire make block hello-world  --template functional --extend i-data
 ```
 
-### Rename component
+### <a id="rename-component"></a>Rename component
 
 ```bash
 v4fire rename hello-world app-loader
@@ -91,7 +101,7 @@ v4fire rename hello-world app-loader
 
 It will rename `src/components/b-hello-world` to `src/components/b-app-loader`.
 
-### Resolve changelog
+### <a id="resolve-changelog"></a>Resolve changelog
 
 ```bash
 v4fire resolve-changelog
@@ -100,7 +110,7 @@ v4fire resolve-changelog
 It will scan repo for all files with name `CHANGELOG.md`, resolve conflicts and sort records by date.
 WARNING: Conflicts within the same record may not be resolved correctly!
 
-### Make test
+### <a id="make-test"></a>Make test
 
 ```bash
 v4fire make-test block hello-world
@@ -140,3 +150,41 @@ For each specified runner the tool will create `test/runner/runner-name` file. [
 of runner template for a module.
 
 In this case generated `test/index.js` file will include only test setup and all test evaluation code will be moved to runners.
+
+### <a id="ai-buddy"></a>Ai buddy
+If you want to learn about the capabilities and configuration of this feature, please refer to the documentation for the [intelli-buddy](https://github.com/misbiheyv/intelli-buddy) package.
+
+Below are instructions on how to use it in the context of V4fire CLI.
+
+#### Without diffs
+By default, it will replace the selected content with the processed one.
+```js
+// src/text.txt
+{{#ai prompt="translate on portuguese"}}Hello, world!{{/ai}}
+```
+```bash
+v4fire ai-buddy src/text.txt
+```
+```js
+// src/text.txt
+Olá, mundo!
+```
+
+#### With diffs
+You can also specify the --diff flag. Then, in the output, you will see a comparison of the original and processed version in the Git diffs format. This means that the editor will pick up the format and highlight the changes for you.
+
+```js
+// src/text.txt
+{{#ai prompt="translate on portuguese"}}Hello, world!{{/ai}}
+```
+```bash
+v4fire ai-buddy src/text.txt --diff
+```
+```js
+// src/text.txt
+<<<<<<< ORIGINAL VERSION
+Hello, world!
+=======
+Olá, mundo!
+>>>>>>> CORRECTED VERSION
+```
