@@ -6,7 +6,7 @@ const CreateWorkspaceController = require('./create-workspace');
 const RemoveWorkspaceController = require('./remove-workspace');
 const UpGitController = require('./up-yarn-git-dependencies');
 const CreateAppController = require('./create-app');
-const AiBuddy = require('./ai-buddy');
+const AiBuddyController = require('./ai-buddy');
 
 module.exports = {
 	MakeController,
@@ -17,5 +17,5 @@ module.exports = {
 	UpGitController,
 	RemoveWorkspaceController,
 	CreateAppController,
-	AiBuddy
+	AiBuddyController
 };
