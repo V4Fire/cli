@@ -2434,6 +2434,7 @@ __metadata:
     git-config-path: 2.0.0
     glob: 9.3.4
     handlebars: 4.7.7
+    intelli-buddy: 1.0.0-alpha
     mocha: 10.2.0
     parse-git-config: 3.0.0
     typescript: 4.4.4
@@ -6385,6 +6386,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"handlebars-async-helpers@npm:1.0.6":
+  version: 1.0.6
+  resolution: "handlebars-async-helpers@npm:1.0.6"
+  peerDependencies:
+    handlebars: 4.7.6
+  checksum: a245ca6b46dbdc554053fa9b5052aebd77a14e351b941c37f5547675d2d9769a0ba5bff9a88432e1feac8c27eb3ccac7513134305fd801bb9ff582e6fc699900
+  languageName: node
+  linkType: hard
+
+"handlebars@npm:4.7.6":
+  version: 4.7.6
+  resolution: "handlebars@npm:4.7.6"
+  dependencies:
+    minimist: ^1.2.5
+    neo-async: ^2.6.0
+    source-map: ^0.6.1
+    uglify-js: ^3.1.4
+    wordwrap: ^1.0.0
+  dependenciesMeta:
+    uglify-js:
+      optional: true
+  bin:
+    handlebars: bin/handlebars
+  checksum: 6fb9ba14c703cb6e77d5a1dcb37631126d25ae1503834b9b4f151d5324b52192a618d1944badc351588271cc28a8144093f85dbabc8c72278cfa2dbd09c70124
+  languageName: node
+  linkType: hard
+
 "handlebars@npm:4.7.7":
   version: 4.7.7
   resolution: "handlebars@npm:4.7.7"
@@ -6721,6 +6749,18 @@ __metadata:
   version: 1.3.8
   resolution: "ini@npm:1.3.8"
   checksum: dfd98b0ca3a4fc1e323e38a6c8eb8936e31a97a918d3b377649ea15bdb15d481207a0dda1021efbd86b464cae29a0d33c1d7dcaf6c5672bee17fa849bc50a1b3
+  languageName: node
+  linkType: hard
+
+"intelli-buddy@npm:1.0.0-alpha":
+  version: 1.0.0-alpha
+  resolution: "intelli-buddy@npm:1.0.0-alpha"
+  dependencies:
+    handlebars: 4.7.6
+    handlebars-async-helpers: 1.0.6
+  peerDependencies:
+    tslib: 2.6.1
+  checksum: e2aa1803ce31ff12383bea5404989dbbf5e3e54282a2f6e98ac81d889e2749a6a588dc98b5cfc972f6ecb397dfa1ab7b254f14671c1454f4ba524d20db5de968
   languageName: node
   linkType: hard
 
