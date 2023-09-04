@@ -21,6 +21,7 @@ const options = yargs
 			});
 		}
 	)
+
 	.command(
 		'make-test <subject> <target>',
 		'Make test for page or component',
@@ -94,6 +95,7 @@ const options = yargs
 				});
 		}
 	)
+
 	.command(
 		'rename <name> <new-name> [path]',
 		'Rename block or page',
@@ -110,6 +112,25 @@ const options = yargs
 				});
 		}
 	)
+
+	.command(
+		'ai-buddy <path>',
+		'Helps with code and documentation writing',
+		(yargs) => {
+			yargs
+				.positional('path', {
+					type: 'string',
+					demandOption: true
+				})
+				.option('showDiff', {
+					alias: 'diff',
+					describe: 'Show diffs after `ai-buddy` processing',
+					default: false,
+					type: 'boolean'
+				});
+		}
+	)
+
 	.option('debug', {
 		alias: 'd',
 		describe: 'Debug mode',
