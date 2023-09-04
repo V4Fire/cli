@@ -2434,7 +2434,7 @@ __metadata:
     git-config-path: 2.0.0
     glob: 9.3.4
     handlebars: 4.7.7
-    intelli-buddy: 1.0.0-alpha
+    intelli-buddy: 1.0.0-alpha.1
     mocha: 10.2.0
     parse-git-config: 3.0.0
     typescript: 4.4.4
@@ -6752,15 +6752,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"intelli-buddy@npm:1.0.0-alpha":
-  version: 1.0.0-alpha
-  resolution: "intelli-buddy@npm:1.0.0-alpha"
+"intelli-buddy@npm:1.0.0-alpha.1":
+  version: 1.0.0-alpha.1
+  resolution: "intelli-buddy@npm:1.0.0-alpha.1"
   dependencies:
     handlebars: 4.7.6
     handlebars-async-helpers: 1.0.6
   peerDependencies:
     tslib: 2.6.1
-  checksum: e2aa1803ce31ff12383bea5404989dbbf5e3e54282a2f6e98ac81d889e2749a6a588dc98b5cfc972f6ecb397dfa1ab7b254f14671c1454f4ba524d20db5de968
+  checksum: 997d45eef7a18012f638415d0ab0697044cca12120771ecb8fad1ce51630a6fa40fa747b8f42be95883a765697d255afc55718159eed1bdca8b5eb41cf99ec66
   languageName: node
   linkType: hard
 

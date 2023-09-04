@@ -28,7 +28,7 @@
     "git-config-path": "2.0.0",
     "glob": "9.3.4",
     "handlebars": "4.7.7",
-    "intelli-buddy": "1.0.0-alpha",
+    "intelli-buddy": "1.0.0-alpha.1",
     "parse-git-config": "3.0.0",
     "yargs": "17.7.1"
   },

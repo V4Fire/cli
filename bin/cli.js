@@ -121,16 +121,15 @@ const options = yargs
 				.positional('path', {
 					type: 'string',
 					demandOption: true
+				})
+				.option('showDiff', {
+					alias: 'diff',
+					describe: 'Show diffs after `ai-buddy` processing',
+					default: false,
+					type: 'boolean'
 				});
 		}
 	)
-
-	.option('showDiff', {
-		alias: 'diff',
-		describe: 'Show diffs after `ai-buddy` processing',
-		default: false,
-		type: 'boolean'
-	})
 
 	.option('debug', {
 		alias: 'd',
