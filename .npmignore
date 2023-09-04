@@ -52,6 +52,7 @@ Icon
 /tsconfig.json
 /client.tsconfig.json
 .env
+ai-config.json
 
 # Log
 *.log

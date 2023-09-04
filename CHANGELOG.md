@@ -11,6 +11,12 @@
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
+## v2.1.0 (2023-08-10)
+
+#### :rocket: [New Feature]
+
+* `ai-buddy` - Command allowing the use of `intelli-buddy` through the v4fire-cli
+
 ## v2.0.0 (2023-08-10)
 
 #### :boom: [Breaking Change]

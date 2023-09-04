@@ -56,3 +56,7 @@ $RECYCLE.BIN
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Local config files
+.env
+ai-config.json
